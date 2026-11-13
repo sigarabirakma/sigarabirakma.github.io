@@ -1,0 +1,29 @@
+name: TİTCK ilaç listesini güncelle
+
+on:
+  schedule:
+    # Her pazartesi 09:00 (Türkiye saati = 06:00 UTC). TİTCK listeyi genellikle cuma yayınlar.
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  guncelle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Sözlüğü güncelle
+        run: python tools/update_titck.py index.html
+      - name: Değiştiyse kaydet ve yayınla
+        run: |
+          if git diff --quiet; then echo "Değişiklik yok"; exit 0; fi
+          git config user.name "sigarabirakma"
+          git config user.email "sigarabirakma@users.noreply.github.com"
+          git add index.html
+          git commit -m "TİTCK ilaç listesi otomatik güncellendi"
+          git push
