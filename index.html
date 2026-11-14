@@ -1247,7 +1247,7 @@ const SAMPLES=[
  {not:"Hipertiroidi, peptik ülser ve ciddi deri hastalığı; nikotin replasmanı istiyor",
   ad:"Örnek 20",yas:52,cins:"K",kilo:58,adet:18,yil:30,basyas:20,co:16,q1:"2",q2:"0",q3:"1",q4:"0",q5:"0",asama:"hazirlik",motiv:8,deneme:1,tercih:"nrt",c_tiroid:true,c_ulser:true,c_deri:true}
 ];
-let sampleIdx=0;
+let sampleIdx=-1;
 try{ const k=parseInt(localStorage.getItem("sbtp_sample")||"0",10); if(k>=0 && k<SAMPLES.length) sampleIdx=k; }catch(e){}
 function clearForm(){ form.querySelectorAll("input,select,textarea").forEach(e=>{ if(e.type==="checkbox") e.checked=false; else if(e.tagName==="SELECT") e.selectedIndex=0; else e.value=""; }); $("baslama").value=today(); $("sampleNote").textContent=""; RECOG=[]; AUTO=new Set(); $("ilacMatch").innerHTML=""; }
 function loadSample(advance){
@@ -1274,7 +1274,7 @@ let tmr=null;
 form.addEventListener("input",e=>{ if(e.target.id==="ilacText"){ clearTimeout(tmr); tmr=setTimeout(()=>{scanText();render();},350); return;} if(e.target.id==="cins") toggleGender(); render(); });
 form.addEventListener("change",e=>{ if(e.target.id==="cins") toggleGender(); render(); });
 
-loadSample(false);
+clearForm(); toggleGender(); render();
 })();
 </script>
 
