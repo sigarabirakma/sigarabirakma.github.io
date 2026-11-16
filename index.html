@@ -198,6 +198,13 @@ th{color:var(--fg);font-weight:700;border-bottom:2px solid var(--line)}
   th,td{padding:6px 6px}
   pre.summary{font-size:12px}
   .toast{left:16px;right:16px;text-align:center}
+  /* ilaç kutuları: telefonda iki sütun, daha küçük */
+  .drugpick{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:6px 0 10px}
+  .dp{min-height:0;padding:7px 9px;gap:3px;border-width:1.5px;border-radius:8px}
+  .dp b{font-size:15px}
+  .dp .pill{font-size:11px;padding:1px 7px}
+  .dp small{font-size:11.5px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .planh{font-size:16px;margin:12px 0 6px;padding-top:10px}
 }
 </style>
 </head>
