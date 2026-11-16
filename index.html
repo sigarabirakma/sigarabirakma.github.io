@@ -86,6 +86,7 @@ button.primary{background:var(--ink);border-color:var(--ink);color:var(--surface
 .rx-head h2{font-size:21px;margin:0}
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 @media (max-width:560px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stats.stats-2{grid-template-columns:repeat(2,minmax(0,1fr))}
 .stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:9px 11px;min-width:0}
 .stat .k{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .stat .v{font-family:var(--f-mono);font-size:21px;font-variant-numeric:tabular-nums;line-height:1.2}
@@ -199,12 +200,13 @@ th{color:var(--fg);font-weight:700;border-bottom:2px solid var(--line)}
   <div class="brand"><span class="rx" aria-hidden="true">℞</span><div><h1>Sigara Bırakma Tedavi Planlayıcı</h1><small>ICD-10 F17 · Hekim için klinik karar desteği</small></div></div>
   <nav class="tabs" aria-label="Bölümler">
     <a href="#degerlendirme" data-view="degerlendirme">Hasta değerlendirme</a>
+    <a href="#lite" data-view="lite">Hızlı değerlendirme (Lite)</a>
     <a href="#ilaclar" data-view="ilaclar">İlaç rehberi</a>
     <a href="#bilgi" data-view="bilgi">Bilgi ve SSS</a>
   </nav>
 </div></header>
 
-<p class="disclaimer">Bu araç Türk Toraks Derneği 2025 Uzlaşı Raporu, SBÜ "Tütün ve Tütün Ürünleri" kitabı, ders notları ve Türkiye'deki KÜB/KT metinlerine göre öneri üretir. Bırakma ilaçlarının (Dupons, Zyban, Nikitabs, NRT) KÜB 4.5 etkileşimleri ve sigarayı bırakmanın CYP1A2 etkisi kapsanmıştır; ilaç adları TİTCK ruhsatlı ürünler listesinden (<span class="titck-date">13.11.2026</span>) tanınır. Bunların dışındaki ilaç–ilaç etkileşimleri için ek kaynak kullanın. Son karar hekimindir.</p>
+<p class="disclaimer">Bu araç Türk Toraks Derneği 2025 Uzlaşı Raporu, SBÜ "Tütün ve Tütün Ürünleri" kitabı ve Türkiye'deki KÜB/KT metinlerine göre öneri üretir. Bırakma ilaçlarının (Dupons, Champix, Zyban, Qsmok, Nikitabs, NRT) KÜB 4.5 etkileşimleri ve sigarayı bırakmanın CYP1A2 etkisi kapsanmıştır; ilaç adları TİTCK ruhsatlı ürünler listesinden (<span class="titck-date">13.11.2026</span>) tanınır. Bunların dışındaki ilaç–ilaç etkileşimleri için ek kaynak kullanın. Son karar hekimindir.</p>
 
 <!-- ================= DEĞERLENDİRME ================= -->
 <section class="view" id="v-degerlendirme">
@@ -426,6 +428,23 @@ th{color:var(--fg);font-weight:700;border-bottom:2px solid var(--line)}
 </div>
 </section>
 
+<!-- ================= LITE ================= -->
+<section class="view" id="v-lite" hidden>
+<div class="actions">
+  <button type="button" id="L_btnClear">Formu temizle</button>
+  <a class="jump" href="#L_sonuc" id="L_jumpRes"><button type="button" tabindex="-1">Sonuca git ↓</button></a>
+  <span class="hint">Kısa form: yaş, cinsiyet, sigara öyküsü, Fagerström ve ek hastalıklar. Kullandığı ilaçlar ve motivasyon gibi ayrıntılar için "Hasta değerlendirme" sekmesini kullanın.</span>
+</div>
+<div class="grid">
+<form id="lf" autocomplete="off" onsubmit="return false"></form>
+<aside class="panel" id="L_sonuc" aria-live="polite">
+  <div class="stats stats-2" id="L_stats"></div>
+  <div class="card rx-card" id="L_rx"></div>
+  <div class="card" id="L_warn"></div>
+</aside>
+</div>
+</section>
+
 <!-- ================= İLAÇ REHBERİ ================= -->
 <section class="view" id="v-ilaclar" hidden>
   <div class="kb">
@@ -433,20 +452,23 @@ th{color:var(--fg);font-weight:700;border-bottom:2px solid var(--line)}
   <div class="drug"><h2>Vareniklin</h2><div class="meta">Dupons (Türkiye'de Şubat 2025'ten beri eczanede) · Champix · parsiyel α4β2 nikotinik agonist / antagonist · Gebelik C</div>
     <dl class="dl">
       <dt>Doz</dt><dd>Sigara içerken başlanır. 1–3. gün 0,5 mg sabah · 4–7. gün 0,5 mg 2×1 · 8. günden itibaren 1 mg 2×1. Bırakma günü 8–14. gün arasında (tercihen 8. gün). 12 haftaya tamamlanır; sık nüks edenlerde 24 haftaya uzatılabilir.</dd>
+      <dt>Esnek bırakma (Champix KT)</dt><dd>İlk 2 haftada tarih belirleyemeyen hasta, tedavinin ilk 5 haftası içinde kendi bırakma gününü seçebilir. Birden bırakamayan hastada: ilk 12 haftada sigara azaltılır, 12. haftanın sonunda bırakılır, ardından 12 hafta daha 1 mg 2×1 (toplam 24 hafta).</dd>
       <dt>Paketler</dt><dd>Başlangıç paketi (1 ay) + 2 devam paketi (4'er hafta, 1 mg 2×1).</dd>
       <dt>Böbrek</dt><dd>KrKl 30–80: doz ayarı yok (yan etki olursa 1 mg/gün). KrKl &lt; 30: 3 gün 0,5 mg 1×1, sonra 1 mg 1×1. Son dönem böbrek yetmezliğinde yeterli veri yok.</dd>
       <dt>Karaciğer / yaşlı</dt><dd>Doz ayarı gerekmez; idrarla atılır.</dd>
       <dt>Kontrendikasyon</dt><dd>Aşırı duyarlılık. Gebelik, emzirme ve 18 yaş altında önerilmez.</dd>
       <dt>Yan etki</dt><dd>Bulantı (en sık; yemekle alınır, sürerse 1 mg/gün, sonra tekrar 2×1 denenir), uykusuzluk, anormal rüya, baş ağrısı, GİS yakınmaları. Nadiren anjiyoödem, SJS.</dd>
       <dt>Etkileşim</dt><dd>Klinik olarak anlamlı etkileşim yok. Simetidin maruziyeti %29 artırır; ağır böbrek yetmezliğinde birlikte verme. NRT ile birlikte bulantı, baş ağrısı, kusma artar. Alkol intoksikasyonu artışı bildirilmiş.</dd>
-      <dt>Dikkat</dt><dd>Nöbet öyküsünde dikkatli; nöbet olursa kes. Psikiyatrik öyküde yakın izlem (EAGLES: artmış ciddi nöropsikiyatrik risk yok). Nadiren dikkat ve görme bozukluğu: ağır vasıta, pilot, hava trafik kontrolörü. Laboratuvar izlemi gerekmez. Kesilirken azaltma gerekmez.</dd>
+      <dt>Dikkat</dt><dd>Nöbet öyküsünde dikkatli; nöbet olursa kes. Psikiyatrik öyküde yakın izlem (EAGLES: artmış ciddi nöropsikiyatrik risk yok). Baş dönmesi, uyku hali ve geçici bilinç kaybı bildirilmiş (Champix KT): etkisi bilinene kadar araç ve makine kullanılmamalı (ağır vasıta, pilot, hava trafik kontrolörü). Kardiyovasküler hastalıkta yeni/kötüleşen belirtiler bildirilmeli. Laboratuvar izlemi gerekmez. Kesilirken azaltma gerekmez.</dd>
     </dl></div>
 
-  <div class="drug"><h2>Bupropion SR</h2><div class="meta">Zyban, Wellbutrin XL, Qsmok · 150 mg yavaş salımlı · NDRI · Gebelik C</div>
+  <div class="drug"><h2>Bupropion SR</h2><div class="meta">Zyban, Qsmok (sigara bırakma endikasyonu) · Wellbutrin XL (depresyon) · 150 mg yavaş/uzatılmış salımlı · NDRI · Gebelik C</div>
     <dl class="dl">
       <dt>Doz</dt><dd>Sigara içerken başlanır. 1–3. gün 150 mg 1×1 · 4. günden itibaren 150 mg 2×1 (en az 8 saat ara; akşam dozu yatmadan en az 4 saat önce). Bırakma günü 7–14. gün arası. 7–12 hafta, gerekirse 6 aya kadar.</dd>
       <dt>Doz azaltma (150 mg 1×1)</dt><dd>65 yaş üstü, böbrek yetmezliği, hafif–orta siroz, 45 kg altı, yan etkiyi tolere edemeyen.</dd>
-      <dt>Kontrendikasyon</dt><dd>18 yaş altı, konvülsiyon öyküsü, SSS tümörü/travması, bipolar bozukluk, anoreksiya/bulimiya, ağır siroz, MAOİ (son 14 gün), linezolid/IV metilen mavisi, alkol veya benzodiazepinin ani kesilmesi, başka bupropion içeren ilaç, kontrolsüz HT, gebelik, aşırı duyarlılık.</dd>
+      <dt>Kontrendikasyon</dt><dd>18 yaş altı, konvülsiyon öyküsü, SSS tümörü/travması, bipolar bozukluk, anoreksiya/bulimiya, ağır siroz, MAOİ (geri dönüşsüz: son 14 gün; geri dönüşlü/moklobemid: 24 saat — Zyban ve Qsmok KÜB), linezolid/IV metilen mavisi, alkol veya benzodiazepinin ani kesilmesi, başka bupropion içeren ilaç, kontrolsüz HT, gebelik, aşırı duyarlılık.</dd>
+      <dt>Toraks ek önerileri</dt><dd>Toraks 2025 benzodiazepin, barbitürat ve antiepileptik ilaçların mevcut kullanımında bupropionu önermez. KÜB'lerde bunlar kontrendikasyon değil, "dikkatli kullan, en fazla 150 mg/gün" uyarısıdır. Araç bu durumlarda bupropionu geri plana atar.</dd>
+      <dt>Kullanım (Qsmok KÜB)</dt><dd>Tablet bütün yutulur; bölünmez, ezilmez, çiğnenmez (nöbet riski artar). Gece yatmadan önce alınmaz. İdrar ilaç taramasında yalancı amfetamin pozitifliği yapabilir. Doğurganlık çağındaki kadın etkili kontrasepsiyon kullanmalı.</dd>
       <dt>Nöbet eşiğini düşürenler</dt><dd>Antipsikotik, antidepresan, teofilin, sistemik steroid, kinolon, tramadol, antimalaryal, stimülan/anorektik, sedatif antihistaminik, insülin/OAD, aşırı alkol.</dd>
       <dt>CYP etkileşimleri</dt><dd>CYP2D6 inhibitörüdür: metoprolol, propafenon, flekainid, SSRI, TCA, risperidon, tiyoridazin düzeyleri artar. Klopidogrel/tiklopidin bupropion düzeyini artırır. Karbamazepin, fenitoin, fenobarbital etkisini azaltır; valproat metabolizmasını inhibe eder. Ritonavir, lopinavir ve efavirenz bupropion maruziyetini %20–80 azaltır. Tamoksifen ve digoksin etkisini azaltır (bupropion kesilince digoksin yükselebilir). Kodein gibi CYP2D6 ile aktive olan ilaçların etkisi azalır. Levodopa/amantadin ile yan etki artar. SSRI/SNRI ile serotonin sendromu bildirilmiş. Nöbet eşiğini düşüren ilaçla birlikteyse en fazla 150 mg/gün.</dd>
       <dt>Yan etki</dt><dd>Uykusuzluk, ağız kuruluğu, baş ağrısı, bulantı, kaşıntı/döküntü; konvülsiyon yaklaşık 1/1000. Kilo kaybı ve az cinsel yan etki avantajdır.</dd>
@@ -457,7 +479,7 @@ th{color:var(--fg);font-weight:700;border-bottom:2px solid var(--line)}
   <div class="drug"><h2>Sitizin</h2><div class="meta">Nikitabs 1,5 mg, 100 tablet · SBP'lerde ücretsiz, Şubat 2025'ten beri eczanede · parsiyel nikotinik agonist</div>
     <dl class="dl">
       <dt>Doz</dt><dd>1–3. gün: 2 saatte bir 1 tablet (6/gün), sigara azaltılır. 3. günde etki yoksa kes, 2–3 ay sonra tekrar dene. 4–12. gün 2,5 saatte bir (5/gün) · 13–16. gün 3 saatte bir (4/gün) · 17–20. gün 5 saatte bir (3/gün) · 21–25. gün 6–8 saatte bir (1–2/gün). 5. gün sigara tamamen bırakılır. Toplam 25 gün, 1 kutu.</dd>
-      <dt>Kontrendikasyon</dt><dd>18 yaş altı ve 65 yaş üstü, gebelik, emzirme, yakın MI, yakın SVO, anjina, aritmi, alerji. (Ders notunuzda böbrek/karaciğer yetmezliği ve tbc de kontrendike olarak geçiyor; KT'de "dikkatli kullanınız".)</dd>
+      <dt>Kontrendikasyon</dt><dd>18 yaş altı ve 65 yaş üstü, gebelik, emzirme, yakın MI, yakın SVO, anjina, aritmi, alerji. Böbrek/karaciğer yetmezliğinde KT'de "dikkatli kullanınız".</dd>
       <dt>Dikkat</dt><dd>İskemik kalp hastalığı, kalp yetmezliği, HT, feokromasitoma, ateroskleroz/PAH, hipertiroidi, peptik ülser, GÖRH, diyabet, şizofreni, psikiyatrik hastalık, böbrek/karaciğer yetmezliği.</dd>
       <dt>Etkileşim</dt><dd><b>Tüberküloz tedavisinde kullanılan ilaçlarla birlikte kullanılamaz (KÜB 4.5).</b> Sigara bırakılınca teofilin, takrin, klozapin, ropinirol dozu ayarlanmalı; imipramin, olanzapin, klomipramin, fluvoksamin, flekainid ve pentazosin düzeyi de artabilir. Hormonal kontraseptif etkinliği bilinmiyor: ek bariyer yöntem. Sigara veya nikotin ürünleriyle birlikte nikotin yan etkileri artar. Alkolün depresan etkisini artırabilir.</dd>
       <dt>Uyarı</dt><dd>5 günden fazla sigarayla birlikte kullanılırsa nikotin toksisitesi gelişebilir. Araç kullanmayı etkilemez.</dd>
@@ -468,13 +490,12 @@ th{color:var(--fg);font-weight:700;border-bottom:2px solid var(--line)}
     <dl class="dl">
       <dt>Başlama</dt><dd>Bırakma günü başlanır; bantla birlikte sigara içilmez.</dd>
       <dt>Bant (16 saat)</dt><dd>≥ 20/gün: 25 mg 4 hafta → 15 mg 2 hafta → 10 mg 2 hafta. &lt; 20/gün: 15 mg 4 hafta → 10 mg 4 hafta. Yatarken çıkarılır, uyku bozukluğunda tercih edilir.</dd>
-      <dt>Bant (24 saat)</dt><dd>&gt; 15/gün: 21 mg 4 hafta → 14 mg 2 hafta → 7 mg 2 hafta. ≤ 15/gün: 14 mg 4 hafta → 7 mg 4 hafta.</dd>
-      <dt>Uygulama</dt><dd>Sabah, belden yukarı kılsız, kuru, temiz deriye; 20 saniye bastırılır. Her gün farklı yer, aynı yere en erken 4 gün sonra. 1 kutu = 7 bant, ilk ay 4 kutu. En fazla 6 ay.</dd>
+      <dt>Bant (24 saat)</dt><dd>&gt; 15/gün: 21 mg 4 hafta → 14 mg 2 hafta → 7 mg 2 hafta. ≤ 15/gün: 14 mg 4 hafta → 7 mg 4 hafta.</dd>      <dt>Uygulama</dt><dd>Sabah, belden yukarı kılsız, kuru, temiz deriye; 20 saniye bastırılır. Her gün farklı yer, aynı yere en erken 4 gün sonra. 1 kutu = 7 bant, ilk ay 4 kutu. En fazla 6 ay.</dd>
       <dt>Sakız</dt><dd>&lt; 20/gün veya düşük–orta bağımlılık: 2 mg; ≥ 20/gün (bazı kaynaklarda ≥ 25) veya yüksek bağımlılık: 4 mg. Çiğne–park et: tat gelene kadar yavaşça çiğne, yanakla dişeti arasında beklet, tat azalınca tekrar; yaklaşık 30 dk. Günde 8–12, en fazla 24 sakız. Kullanmadan 30 dk önce yiyip içmeyin (özellikle asitli/gazlı). 8–12 hafta.</dd>
       <dt>Pastil</dt><dd>İlk sigara uyandıktan ≥ 30 dk sonra: 2 mg; &lt; 30 dk: 4 mg. Saatte 1, günde yaklaşık 15; çiğnemeden 30 dk emilir.</dd>
       <dt>Oral sprey</dt><dd>1–6. hafta: istek oldukça 1–2 sprey (saatte en fazla 4, günde en fazla 64). 7–9. hafta yarıya, 10–12. hafta günde 2–4'e indir. En fazla 6 ay.</dd>
       <dt>Kombine NRT</dt><dd>Bant + kısa etkili form (sakız/pastil/sprey) tek forma göre %17–37 daha yüksek uzun dönem bırakma sağlar; yüksek bağımlılıkta tercih edilir.</dd>
-      <dt>Kontrendikasyon</dt><dd>Gebelik ve emzirme (fayda–zarar değerlendirmesiyle), 18 yaş altı, son 6 hafta içinde MI (bant notunda son 1 ay), unstabil anjina, ciddi aritmi, ciddi deri hastalığı (bant), aşırı duyarlılık.</dd>
+      <dt>Kontrendikasyon</dt><dd>Gebelik ve emzirme (fayda–zarar değerlendirmesiyle), 18 yaş altı, son 6 hafta içinde MI, unstabil anjina, ciddi aritmi, ciddi deri hastalığı (bant), aşırı duyarlılık.</dd>
       <dt>Dikkat</dt><dd>Böbrek/karaciğer yetmezliği, hipertiroidi, tip 1 DM, feokromasitoma; oral formlarda peptik ülser.</dd>
       <dt>Yan etki</dt><dd>Bant yerinde deri reaksiyonu, baş ağrısı, bulantı, çarpıntı, uyku bozukluğu (24 saatlikte), hıçkırık ve çene ağrısı (sakız).</dd>
     </dl></div>
@@ -571,19 +592,26 @@ th{color:var(--fg);font-weight:700;border-bottom:2px solid var(--line)}
 <p><b>Kanser:</b> Bırakmak cerrahi riskini azaltır, kemo-radyoterapi yanıtını artırır, ikincil tümör riskini düşürür.</p>
 <p><b>Diyabet:</b> Bırakmak insülin direncini ve komplikasyonları azaltır. İnsülin kullananda bırakınca hipoglisemi açısından izlem.</p>
 <p><b>Psikiyatrik hastalık:</b> Başarıyı azaltır; farmakoterapi ve psikiyatri desteği gerekir. Sigara bırakma altta yatan hastalığı şiddetlendirebilir; klozapin, olanzapin gibi ilaçların düzeyi yükselir.</p>
-<p><b>Kronik hastalıklar:</b> Motivasyonel görüşme, BDT ve destek grupları önerilir.</p>
-</div></details>
+<p><b>Kronik hastalıklar:</b> Motivasyonel görüşme, BDT ve destek grupları önerilir.</p></div></details>
 
 <details><summary>Sigara bırakınca dozu değişebilen ilaçlar</summary><div class="body">
 <p>Sigara dumanındaki polisiklik hidrokarbonlar CYP1A2'yi indükler (nikotin değil; bu yüzden NRT bu etkiyi sürdürmez). Bırakınca şu ilaçların düzeyi artar: teofilin, klozapin, olanzapin, haloperidol, fluvoksamin, ropinirol, takrin, kafein. Varfarinde INR, insülinde kan şekeri izlenmeli. Bu, hangi bırakma ilacı kullanılırsa kullanılsın geçerlidir.</p>
 </div></details>
 
+<details><summary>Kaynaklar arası farklılıklar</summary><div class="body">
+<p class="hint">Aynı konuda kaynakların farklı öneri verdiği noktalar. Araç, çelişkide genellikle daha temkinli olanı uygular ve uyarıda kaynağı belirtir.</p>
+<p><b>Bupropion kontrendikasyonları:</b> Toraks benzodiazepin, barbitürat ve antiepileptik ilaçların mevcut kullanımında önermez; Zyban ve Qsmok KÜB'lerinde bunlar yalnızca "dikkat, en fazla 150 mg/gün" uyarısıdır. Kontrolsüz HT sayfada kontrendike olarak ele alınır; KÜB'de uyarıdır (tansiyon ölçülür, belirgin artışta kesilir).</p>
+<p><b>Linezolid / IV metilen mavisi:</b> Toraks bupropionla birlikte önermez; Türkçe Zyban, Qsmok ve Wellbutrin XL metinlerinde geçmez.</p>
+<p><b>Bupropion süresi:</b> KÜB en az 7 hafta (7. haftada ilerleme yoksa kes); Toraks 8 hafta, gerekirse 6 ay.</p>
+<p><b>Vareniklin ve araç kullanımı:</b> Champix KT baş dönmesi, uyku hali ve geçici bilinç kaybı nedeniyle etkisi bilinene kadar araç kullanmamayı önerir; Toraks sonraki çalışmaların sürüş etkisini desteklemediğini belirtir.</p>
+<p><b>Vareniklin bırakma günü:</b> Dupons/Champix 8–14. gün (veya ilk 5 hafta içinde esnek); Toraks esnek tarihli yöntemde bir ay içinde bırakma günü seçilebileceğini belirtir.</p>
+</div></details>
+
 <details><summary>Kaynaklar</summary><div class="body">
 <p>Türk Toraks Derneği. Tütün Ürünleri ve Nikotin Bağımlılığında Tanı ve Tedavi Uzlaşı Raporu, Nisan 2025.</p>
 <p>Erdöl C, Ergüder T (ed). Tütün ve Tütün Ürünlerinin Kullanımının Önlenmesi, Kontrolü ve Tedavisi. SBÜ Yayınları, 2021.</p>
-<p>"Sigara Bıraktırma" ve "Sigara Bırakma Tüm Farmakoterapi" ders notları.</p>
-<p>KÜB/KT: Dupons, Champix, Zyban, Wellbutrin XL, Nikitabs, Nicorette Freshmint 4 mg, Nicotinell 2 mg sakız, Nicotinell 21 mg/24 saat, Nicorette Invisi 15 ve 25 mg/16 saat.</p>
-<p>Etkileşim kuralları: <a href="https://titck.gov.tr/storage/Archive/2021/kubKtAttachments/1311kubdupons1mg_d1ebb2d2-a3f3-458c-b77c-fc1478ff2ba9.pdf" target="_blank" rel="noopener">Dupons 1 mg KÜB</a> (TİTCK), <a href="https://titck.gov.tr/storage/Archive/2022/kubKtAttachments/TTCKOnaylKBZYBAN_ee14b0a6-8f25-4d2e-98b2-edc414afedae.pdf" target="_blank" rel="noopener">Zyban KÜB</a> (TİTCK), <a href="https://www.ilacrehberi.com/v/nikitabs-15-mg-film-kapl-tablet-116cc/kub/klinik-ozellikler/" target="_blank" rel="noopener">Nikitabs KÜB</a> (rev. 29.08.2023) bölüm 4.3–4.5.</p>
+<p>KÜB/KT: Dupons, Champix (KT), Zyban, Qsmok, Wellbutrin XL, Nikitabs, Nicorette Freshmint 4 mg, Nicotinell 2 mg sakız, Nicotinell 21 mg/24 saat, Nicorette Invisi 15 ve 25 mg/16 saat.</p>
+<p>Etkileşim kuralları: <a href="https://titck.gov.tr/storage/Archive/2021/kubKtAttachments/1311kubdupons1mg_d1ebb2d2-a3f3-458c-b77c-fc1478ff2ba9.pdf" target="_blank" rel="noopener">Dupons 1 mg KÜB</a> (TİTCK), <a href="https://titck.gov.tr/storage/Archive/2022/kubKtAttachments/TTCKOnaylKBZYBAN_ee14b0a6-8f25-4d2e-98b2-edc414afedae.pdf" target="_blank" rel="noopener">Zyban KÜB</a> (TİTCK), <a href="https://titck.gov.tr/storage/Archive/2021/kubKtAttachments/qsmokonaylkb_11f126bb-ea18-47b8-897c-be3a70ae591c.pdf" target="_blank" rel="noopener">Qsmok 150 mg KÜB</a> (TİTCK), Champix 0,5 ve 1 mg kullanma talimatı, <a href="https://www.ilacrehberi.com/v/nikitabs-15-mg-film-kapl-tablet-116cc/kub/klinik-ozellikler/" target="_blank" rel="noopener">Nikitabs KÜB</a> (rev. 29.08.2023) bölüm 4.3–4.5.</p>
 <p>İlaç adları: <a href="https://www.titck.gov.tr/dinamikmodul/85" target="_blank" rel="noopener">TİTCK Ruhsatlı Beşeri Tıbbi Ürünler Listesi</a>, <span class="titck-date">13.11.2026</span> (<span class="titck-count">23.017</span> ürün; ATC koduna göre gruplanır; her hafta otomatik güncellenir).</p>
 <p>WHO clinical treatment guideline for tobacco cessation in adults, 2024 (Toraks raporu aracılığıyla).</p>
 </div></details>
@@ -608,10 +636,11 @@ const $=id=>document.getElementById(id);
 const form=$("f");
 
 /* ---------- router ---------- */
-const views=["degerlendirme","ilaclar","bilgi"];
+const views=["degerlendirme","lite","ilaclar","bilgi"];
 function route(){
   let h=(location.hash||"").slice(1);
   if(h==="sonuc"){h="degerlendirme";}
+  if(h==="L_sonuc"){h="lite";}
   if(!views.includes(h)) h="degerlendirme";
   views.forEach(v=>{$("v-"+v).hidden=(v!==h);});
   document.querySelectorAll("nav.tabs a").forEach(a=>{ if(a.dataset.view===h) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current");});
@@ -745,17 +774,20 @@ function scanText(){
   const lines=RECOG.map(r=>'<li><b>'+esc(r.name)+'</b>'+(r.ing?' → '+esc(r.ing):'')+(r.atc?' <span class="mono">('+esc(r.atc)+')</span>':'')+' · '+(r.groups.length?'<span class="sev warn">'+esc(r.groups.map(g=>GROUPS[g]?GROUPS[g].l:g).join(", "))+'</span>':'bırakma ilaçlarıyla bilinen etkileşim yok')+'</li>');
   $("ilacMatch").innerHTML='<ul class="clean">'+lines.join("")+(unknown.length?'<li><span class="sev bad">Tanınmadı</span>'+esc(unknown.join(", "))+' — yazımı kontrol edin veya ilgili kutuyu elle işaretleyin.</li>':'')+'</ul>';
 }
-function namesIn(g){ return RECOG.filter(r=>r.groups.includes(g)).map(r=>r.name+(r.ing?" ("+r.ing+")":"")); }
+let ACTIVE=[]; // değerlendirilen formun tanınan ilaçları (Lite'ta boş)
+function namesIn(g){ return ACTIVE.filter(r=>r.groups.includes(g)).map(r=>r.name+(r.ing?" ("+r.ing+")":"")); }
 
 /* ---------- puanlar ---------- */
 function cpdPoints(c){ if(c==null) return null; if(c<=10) return 0; if(c<=20) return 1; if(c<=30) return 2; return 3; }
 function ftndLevel(s){ if(s<=2) return ["Çok düşük","p-ok"]; if(s<=4) return ["Düşük","p-ok"]; if(s===5) return ["Orta","p-warn"]; if(s<=7) return ["Yüksek","p-bad"]; return ["Çok yüksek","p-bad"]; }
 
-function readState(){
+function readState(root,P){
+  root=root||form; P=P||"";
   const s={};
-  ["ad","yas","cins","kilo","baslama","gebe","emzirme","meslek","adet","yil","basyas","co","u_nargile","u_esig","u_itu","u_puro","yoksunluk","q1","q2","q3","q4","q5","asama","motiv","deneme","alkol","tercih","p_nrt","p_bup","p_var","p_sit","evde","kiloKaygi","madde","bobrek","karaciger","al_var","al_bup","al_nic","al_sit"].forEach(k=>s[k]=v(k));
-  s.c={}; form.querySelectorAll('input[id^="c_"]').forEach(e=>s.c[e.id.slice(2)]=e.checked);
-  s.m={}; form.querySelectorAll('input[id^="m_"]').forEach(e=>s.m[e.id.slice(2)]=e.checked);
+  ["ad","yas","cins","kilo","baslama","gebe","emzirme","meslek","adet","yil","basyas","co","u_nargile","u_esig","u_itu","u_puro","yoksunluk","q1","q2","q3","q4","q5","asama","motiv","deneme","alkol","tercih","p_nrt","p_bup","p_var","p_sit","evde","kiloKaygi","madde","bobrek","karaciger","al_var","al_bup","al_nic","al_sit"].forEach(k=>s[k]=v(P+k));
+  if(s.alkol==null) s.alkol="yok"; if(s.bobrek==null) s.bobrek="normal"; if(s.karaciger==null) s.karaciger="normal";
+  s.c={}; root.querySelectorAll('input[id^="'+P+'c_"]').forEach(e=>s.c[e.id.slice(P.length+2)]=e.checked);
+  s.m={}; root.querySelectorAll('input[id^="'+P+'m_"]').forEach(e=>s.m[e.id.slice(P.length+2)]=e.checked);
   if(s.cins==="E"){s.gebe=false;s.emzirme=false;}
   s.q6=cpdPoints(s.adet);
   const qs=[s.q1,s.q2,s.q3,s.q4,s.q5].map(x=>x===""||x==null?null:Number(x));
@@ -779,12 +811,12 @@ function evaluate(s){
   const cvAcute = c.mi6w||c.usap||c.aritmi;
   const out={drugs:{},warn:[],global:[],highDep};
 
-  // ---- ilaç tedavisi gerekli mi? (Toraks 2025 Tablo 1 + ders notu)
+  // ---- ilaç tedavisi gerekli mi? (Toraks 2025 Tablo 1)
   let need="evet", needWhy="";
   const n=s.adet;
   if(n==null){ need="bilinmiyor"; needWhy="Günlük sigara sayısını girin."; }
   else if(n<10){
-    if(s.yoksunluk || (s.ftndComplete&&s.ftnd>=5)){ need="evet"; needWhy="Günde 10'dan az içiyor ama içmediğinde yoksunluk yaşıyor; ilaç başlanabilir (ders notu)."; }
+    if(s.yoksunluk || (s.ftndComplete&&s.ftnd>=5)){ need="evet"; needWhy="Günde 10'dan az içiyor ama yoksunluk yaşıyor / FNBT ≥ 5: ilaç başlanabilir."; }
     else { need="hayir"; needWhy="Günde 10'dan az içiyor ve belirgin yoksunluk yok: Toraks 2025'e göre farmakolojik tedavi gerekmez. Fiziksel bağımlılık sorgulanmalı."; }
   } else if(n<20){
     if(s.ttf==null) { need="evet"; needWhy="Günde 10–19 sigara; ilk sigara zamanını girerseniz doz kesinleşir."; }
@@ -824,8 +856,7 @@ function evaluate(s){
   if((s.deneme||0)>=1 && !s.p_var) { V.score+=2; V.plus.push("Nüks / önceki başarısız denemede maliyet-etkin ve etkili"); }
   if(s.p_var){ V.score-=3; V.plus.push("Daha önce kullanmış: tekrar denenebilir, süreyi 24 haftaya uzatmayı veya NRT eklemeyi düşün"); }
   if(c.uyku) V.score-=0.5;
-  if(c.sciz||c.bip) V.plus.push("Ciddi psikiyatrik hastalıkta bupropion ve sitizine göre daha uygun");
-  if(anyPsych && !c.sciz) V.score+=0.5;
+  if(c.sciz||c.bip) V.plus.push("Ciddi psikiyatrik hastalıkta bupropion ve sitizine göre daha uygun");  if(anyPsych && !c.sciz) V.score+=0.5;
   if(s.tercih==="nrt") V.score-=2;
   if(s.tercih==="ucretsiz") V.plus.push("Şu an SBP'lerden temin edilemiyor; eczaneden ücretli");
 
@@ -845,8 +876,8 @@ function evaluate(s){
   if(m.linezolid) B.ci.push("Linezolid / IV metilen mavisi");
   if(m.bupx) B.ci.push("Zaten bupropion içeren ilaç kullanıyor");
   if(s.alkol==="kesme") B.ci.push("Alkolün ani kesilmesi: nöbet riski");
-  if(m.benzo) B.caution.push("Benzodiazepin/barbitürat: ani kesilirse nöbet riski; birlikte kullanımda dikkat");
-  const seizMeds=[]; if(m.antipsik||m.klozapin||m.olanzapin) seizMeds.push("antipsikotik"); if(m.ssri||m.tca) seizMeds.push("antidepresan"); if(m.teofilin) seizMeds.push("teofilin"); if(m.steroid) seizMeds.push("sistemik steroid"); if(m.kinolon) seizMeds.push("kinolon"); if(m.tramadol) seizMeds.push("tramadol"); if(m.antimalaryal) seizMeds.push("antimalaryal"); if(m.stimulan) seizMeds.push("stimülan/anorektik"); if(m.antihist) seizMeds.push("sedatif antihistaminik"); if(m.antidm) seizMeds.push("insülin/OAD");
+  if(m.benzo){ B.caution.push("Benzodiazepin/barbitürat: ani kesilirse nöbet riski; KÜB'de birlikte kullanımda dikkat, Toraks 2025'te önerilmez"); B.score-=3; }
+  if(m.antiepil||m.valproat){ B.caution.push("Antiepileptik kullanımı: Toraks 2025'te bupropionla birlikte önerilmez"); B.score-=2; }  const seizMeds=[]; if(m.antipsik||m.klozapin||m.olanzapin) seizMeds.push("antipsikotik"); if(m.ssri||m.tca) seizMeds.push("antidepresan"); if(m.teofilin) seizMeds.push("teofilin"); if(m.steroid) seizMeds.push("sistemik steroid"); if(m.kinolon) seizMeds.push("kinolon"); if(m.tramadol) seizMeds.push("tramadol"); if(m.antimalaryal) seizMeds.push("antimalaryal"); if(m.stimulan) seizMeds.push("stimülan/anorektik"); if(m.antihist) seizMeds.push("sedatif antihistaminik"); if(m.antidm) seizMeds.push("insülin/OAD");
   if(s.alkol==="asiri") seizMeds.push("aşırı alkol");
   if(seizMeds.length){ B.caution.push("Nöbet eşiğini düşüren: "+seizMeds.join(", ")+". KÜB 4.4: sigarayı bırakmanın yararı nöbet riskinden açıkça fazla değilse kullanma; kullanılacaksa en fazla 150 mg/gün"); B.score-=Math.min(3,seizMeds.length); }
   if(seizMeds.length>=2) B.score-=1;
@@ -889,10 +920,9 @@ function evaluate(s){
   if(c.svo) S.ci.push("Yakın geçmişte SVO");
   if(c.usap||c.kah) S.ci.push("Anjina (kalbe bağlı göğüs ağrısı)");
   if(c.aritmi) S.ci.push("Aritmi");
-  if(s.bobrek!=="normal"||s.karaciger!=="normal") S.caution.push("Böbrek/karaciğer yetmezliği: KT'de dikkatli; ders notunuzda kontrendike. Tercih etme");
+  if(s.bobrek!=="normal"||s.karaciger!=="normal") S.caution.push("Böbrek/karaciğer yetmezliği: KT'de dikkatli kullanınız; klinik deneyim sınırlı, tercih etme");
   if(m.tbc) S.ci.push("Tüberküloz ilacı kullanıyor"+(namesIn("tbc").length?" ("+namesIn("tbc").join(", ")+")":"")+": KÜB 4.5'e göre birlikte kullanılamaz");
-  if(c.tbc) S.caution.push("Aktif tüberküloz: ders notunda kontrendike; tedavisi sürüyorsa KÜB'e göre birlikte kullanılamaz");
-  const sitC=[]; if(c.ky) sitC.push("kalp yetmezliği"); if(c.htk||c.htu) sitC.push("hipertansiyon"); if(c.feo) sitC.push("feokromasitoma"); if(c.pah) sitC.push("ateroskleroz/PAH"); if(c.tiroid) sitC.push("hipertiroidi"); if(c.ulser) sitC.push("peptik ülser"); if(c.gorh) sitC.push("GÖRH"); if(c.dm1||c.dm2) sitC.push("diyabet"); if(c.sciz) sitC.push("şizofreni");
+  if(c.tbc) S.caution.push("Aktif tüberküloz: tedavisi sürüyorsa KÜB 4.5'e göre tüberküloz ilaçlarıyla birlikte kullanılamaz");  const sitC=[]; if(c.ky) sitC.push("kalp yetmezliği"); if(c.htk||c.htu) sitC.push("hipertansiyon"); if(c.feo) sitC.push("feokromasitoma"); if(c.pah) sitC.push("ateroskleroz/PAH"); if(c.tiroid) sitC.push("hipertiroidi"); if(c.ulser) sitC.push("peptik ülser"); if(c.gorh) sitC.push("GÖRH"); if(c.dm1||c.dm2) sitC.push("diyabet"); if(c.sciz) sitC.push("şizofreni");
   if(sitC.length){ S.caution.push("KT'de dikkatli kullanılacak durumlar: "+sitC.join(", ")); S.score-=Math.min(3,sitC.length); }
   if(anyPsych) { S.caution.push("Psikiyatrik hastalık: kaygı ve depresyonu artırabilir"); S.score-=1.5; }
   if(m.kontrasep) S.caution.push("Hormonal kontraseptif etkinliği bilinmiyor: ek bariyer yöntem kullanılmalı");
@@ -951,7 +981,7 @@ function evaluate(s){
   if(c1a2.length) out.global.push(["warn","CYP1A2 ile yıkılan ilaç: "+c1a2.join(", ")+". Sigara dumanı CYP1A2'yi indükler; bırakınca düzeyi artabilir (NRT bu etkiyi sürdürmez). Yan etki ve klinik yanıtı izleyin, gerekirse doz azaltın."]);
   else if(m.cyp1a2) out.global.push(["warn","CYP1A2 ile yıkılan ilaç (ör. tizanidin, duloksetin, agomelatin, erlotinib, pirfenidon, fluvoksamin, imipramin, klomipramin, flekainid): sigara bırakılınca düzeyi artabilir; yan etki ve klinik yanıtı izleyin."]);
   if(m.antiaritmik && !c1a2.length) out.global.push(["info","Flekainid metabolizması sigarayla indüklenebilir; bırakma sonrası düzeyi artabilir."]);
-  if(RECOG.length && RECOG.every(r=>!r.groups.length)) out.global.push(["info","Yazılan ilaçların hiçbiri bırakma ilaçlarıyla veya sigara bırakmayla bilinen bir etkileşim grubunda değil (KÜB 4.5 ve CYP1A2 listesine göre)."]);
+  if(ACTIVE.length && ACTIVE.every(r=>!r.groups.length)) out.global.push(["info","Yazılan ilaçların hiçbiri bırakma ilaçlarıyla veya sigara bırakmayla bilinen bir etkileşim grubunda değil (KÜB 4.5 ve CYP1A2 listesine göre)."]);
   out.global.push(["info","Sigara bırakılınca kafein düzeyi yükselir: kahve/çayı azaltmasını önerin (çarpıntı, uykusuzluk, huzursuzluk yoksunlukla karışabilir)."]);
   if(s.co!=null && s.co>=10) out.global.push(["info","CO "+s.co+" ppm: aktif içicilikle uyumlu; kontrollerde düşüşü motivasyon için gösterin."]);
   if(s.u_esig||s.u_itu) out.global.push(["info","E-sigara / ısıtılmış tütün de bırakılmalı; bırakma aracı değildir ve aynı bağımlılık tedavisine dahil edilmelidir."]);
@@ -1070,24 +1100,30 @@ function statusPill(st){ return st==="ok"?'<span class="pill p-ok">Uygun</span>'
 function table(rows){ return '<div class="tbl-wrap"><table><thead><tr><th>Dönem</th><th>Tarih</th><th>Doz</th><th>Kullanım</th></tr></thead><tbody>'+rows.map(r=>'<tr><td>'+esc(r[0])+'</td><td class="mono">'+esc(r[1])+'</td><td class="mono">'+esc(r[2])+'</td><td>'+esc(r[3])+'</td></tr>').join("")+'</tbody></table></div>'; }
 
 let lastSummary="";
+function statPY(s){ return '<div class="stat"><div class="k">Paket-yıl</div><div class="v">'+(s.py==null?"—":s.py.toLocaleString("tr-TR"))+'</div><div class="d">'+(s.adet!=null&&s.yil!=null?s.adet+" adet × "+s.yil+" yıl / 20":"adet ve yıl girin")+'</div></div>'; }
+function statFTND(s,fl){ return '<div class="stat"><div class="k">Fagerström</div><div class="v">'+(s.ftndComplete?s.ftnd+'<small style="font-size:13px">/10</small>':"—")+'</div><div class="d">'+(fl?'<span class="pill '+fl[1]+'">'+fl[0]+'</span>':"6 soruyu yanıtlayın")+'</div></div>'; }
 function render(){
+  ACTIVE=RECOG;
   const s=readState(); const ev=evaluate(s);
   $("q6out").textContent = s.q6==null? "—" : (s.adet+" adet → "+s.q6+" puan");
   // stats
   const fl = s.ftndComplete? ftndLevel(s.ftnd):null;
   const nbiL = s.nbi==null?"":(s.nbi<=2?"Düşük":s.nbi<=4?"Orta":"Yüksek");
   const stageMap={dusunmeme:"Düşünme öncesi",dusunme:"Düşünme",hazirlik:"Hazırlık",hareket:"Hareket",surdurme:"Sürdürme",nuks:"Nüks"};
-  $("stats").innerHTML =
-   '<div class="stat"><div class="k">Paket-yıl</div><div class="v">'+(s.py==null?"—":s.py.toLocaleString("tr-TR"))+'</div><div class="d">'+(s.adet!=null&&s.yil!=null?s.adet+" adet × "+s.yil+" yıl / 20":"adet ve yıl girin")+'</div></div>'+
-   '<div class="stat"><div class="k">Fagerström</div><div class="v">'+(s.ftndComplete?s.ftnd+'<small style="font-size:13px">/10</small>':"—")+'</div><div class="d">'+(fl?'<span class="pill '+fl[1]+'">'+fl[0]+'</span>':"6 soruyu yanıtlayın")+'</div></div>'+
+  $("stats").innerHTML = statPY(s)+statFTND(s,fl)+
    '<div class="stat"><div class="k">Bağımlılık indeksi</div><div class="v">'+(s.nbi==null?"—":s.nbi+'<small style="font-size:13px">/6</small>')+'</div><div class="d">'+(nbiL||"ilk sigara + adet")+'</div></div>'+
    '<div class="stat"><div class="k">Aşama</div><div class="v" style="font-size:15px;font-family:var(--f-body);font-weight:600;padding-top:4px">'+(stageMap[s.asama]||"—")+'</div><div class="d">'+(s.motiv!=null?"Motivasyon "+s.motiv+"/10":"&nbsp;")+'</div></div>';
 
   // prescription
+  const R=buildRx(s,ev,false);
+  $("rx").innerHTML=R.rx;
+  renderRest(s,ev,R,fl,stageMap);
+}
+function buildRx(s,ev,lite){
   let rx="", plan=null, chosen=null, sumRx="";
   const filled = s.adet!=null || s.yas!=null;
   if(!filled){
-    rx='<div class="rx-head"><span class="sym">℞</span><h2>Önerilen tedavi</h2></div><p class="hint">Yaş ve günlük sigara sayısını girin; öneri anında burada oluşur. Tam bir örnek için "Örnek hastayı yükle"ye basın.</p>';
+    rx='<div class="rx-head"><span class="sym">℞</span><h2>Önerilen tedavi</h2></div><p class="hint">Yaş ve günlük sigara sayısını girin; öneri anında burada oluşur.'+(lite?'':' Tam bir örnek için "Örnek hastayı yükle"ye basın.')+'</p>';
   } else if(ev.quit){
     rx='<div class="rx-head"><span class="sym">℞</span><h2>İlaç gerekmiyor</h2></div><p>6 aydan uzun süredir içmiyor. Tebrik edin, nüks önleme (tetikleyiciler, alkol, stres) üzerine konuşun; kayma olursa hemen başvurmasını söyleyin.</p>';
     sumRx="Sürdürme aşaması, ilaç yok. Nüks önleme danışmanlığı.";
@@ -1130,13 +1166,27 @@ function render(){
       (chosen.caution.length?'<div class="note warn"><b>Dikkat:</b><ul class="clean">'+chosen.caution.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul></div>':'');
     // güçlendirme önerisi
     const boost=[];
-    if(ev.highDep && (s.deneme||0)>=1 && chosen.key==="var") boost.push("Yüksek bağımlılık ve önceki başarısız deneme: vareniklin + kısa etkili NRT eklenebilir (kontrendikasyon kanıtı yok, bulantı ve baş ağrısı artabilir).");
+    if(ev.highDep && (s.deneme||0)>=1 && chosen.key==="var") boost.push("Yüksek bağımlılık ve önceki başarısız deneme: vareniklin + kısa etkili NRT eklenebilir (Toraks: kontrendikasyon kanıtı yok; bulantı ve baş ağrısı artabilir).");
     if(ev.highDep && chosen.key==="bup" && ev.drugs.nrt.status!=="ci") boost.push("Bupropion + NRT bandı onaylı kombinasyondur; bant bırakma günü başlanır, tansiyon haftalık ölçülür.");
     if(chosen.key==="var" && ev.drugs.bup.status==="ok" && (s.deneme||0)>=2) boost.push("Nüks olasılığı yüksek olgularda vareniklin + bupropion denenebilir.");
     if(boost.length) rx+='<div class="note"><b>Güçlendirme seçeneği:</b> '+boost.map(esc).join(" ")+'</div>';
     sumRx=title+". Başlama "+fmtS(s.start)+", bırakma günü "+fmtS(plan.quit)+", bitiş "+fmtS(plan.end)+".\n"+plan.rows.map(r=>"  - "+r[0]+" ("+r[1]+"): "+r[2]+" "+r[3]).join("\n");
   }
-  $("rx").innerHTML=rx;
+  return {rx,plan,chosen,sumRx};
+}
+function warnItems(ev,chosen){
+  const w=[];
+  if(chosen){ chosen.caution.forEach(x=>w.push(["warn",chosen.name+": "+x])); }
+  ev.global.forEach(g=>w.push(g));
+  return w;
+}
+function warnHtml(w,chosen){
+  return '<h2>Etkileşimler ve uyarılar</h2>'+(w.length?'<ul class="clean warnlist">'+w.map(x=>'<li><span class="sev '+x[0]+'">'+(x[0]==="bad"?"Ciddi":x[0]==="warn"?"Dikkat":"Bilgi")+'</span>'+esc(x[1])+'</li>').join("")+'</ul>':'<p class="hint">Kayıtlı etkileşim yok.</p>')+
+    '<div class="ext"><h3>İkinci kontrol</h3><p class="hint">Bırakma ilaçları dışındaki ilaç–ilaç etkileşimleri için hastanın tüm ilaçlarını bir etkileşim denetleyicisine girin'+(ACTIVE.length?': <b>'+esc([...new Set(ACTIVE.map(r=>r.ing||r.name))].join(", "))+'</b>'+(chosen?' + <b>'+esc(chosen.key==="var"?"varenicline":chosen.key==="bup"?"bupropion":chosen.key==="sit"?"cytisine":"nicotine")+'</b>':''):'.')+'</p>'+
+    '<div class="extlinks"><a href="https://www.drugs.com/drug_interactions.html" target="_blank" rel="noopener">Drugs.com etkileşim denetleyicisi ↗</a><a href="https://reference.medscape.com/drug-interactionchecker" target="_blank" rel="noopener">Medscape etkileşim denetleyicisi ↗</a></div></div>';
+}
+function renderRest(s,ev,R,fl,stageMap){
+  const plan=R.plan, chosen=R.chosen, sumRx=R.sumRx;
 
   // CBT
   const cb=cbtDecision(s,ev);
@@ -1146,12 +1196,8 @@ function render(){
     (cb.level!=="destek"?'<p class="hint">Teknikler için "Bilgi ve SSS" sekmesindeki BDT bölümüne bakın. Yapılandırılmış program: haftalık görüşme, kayıt tutma, tetikleyici analizi, bilişsel yeniden yapılandırma, nüks önleme becerileri; ilk 3 ayda en az 5 görüşme.</p>':'');
 
   // Warnings
-  const w=[];
-  if(chosen){ chosen.caution.forEach(x=>w.push(["warn",chosen.name+": "+x])); }
-  ev.global.forEach(g=>w.push(g));
-  $("warn").innerHTML='<h2>Etkileşimler ve uyarılar</h2>'+(w.length?'<ul class="clean warnlist">'+w.map(x=>'<li><span class="sev '+x[0]+'">'+(x[0]==="bad"?"Ciddi":x[0]==="warn"?"Dikkat":"Bilgi")+'</span>'+esc(x[1])+'</li>').join("")+'</ul>':'<p class="hint">Kayıtlı etkileşim yok.</p>')+
-    '<div class="ext"><h3>İkinci kontrol</h3><p class="hint">Bırakma ilaçları dışındaki ilaç–ilaç etkileşimleri için hastanın tüm ilaçlarını bir etkileşim denetleyicisine girin'+(RECOG.length?': <b>'+esc([...new Set(RECOG.map(r=>r.ing||r.name))].join(", "))+'</b>'+(chosen?' + <b>'+esc(chosen.key==="var"?"varenicline":chosen.key==="bup"?"bupropion":chosen.key==="sit"?"cytisine":"nicotine")+'</b>':''):'.')+'</p>'+
-    '<div class="extlinks"><a href="https://www.drugs.com/drug_interactions.html" target="_blank" rel="noopener">Drugs.com etkileşim denetleyicisi ↗</a><a href="https://reference.medscape.com/drug-interactionchecker" target="_blank" rel="noopener">Medscape etkileşim denetleyicisi ↗</a></div></div>';
+  const w=warnItems(ev,chosen);
+  $("warn").innerHTML=warnHtml(w,chosen);
 
   // Alternatives
   const order=ev.all.slice().sort((a,b)=>{const r={ok:0,caution:1,ci:2}; return (r[a.status]-r[b.status])||(b.score-a.score);});
@@ -1260,7 +1306,42 @@ function loadSample(advance){
   render();
 }
 function today(){ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
-function toggleGender(){ const e=v("cins")==="E"; $("lb_gebe").hidden=e; $("lb_emz").hidden=e; if(e){ $("gebe").checked=false; $("emzirme").checked=false; } }
+function toggleGender(P){ P=P||""; const e=v(P+"cins")==="E"; $(P+"lb_gebe").hidden=e; $(P+"lb_emz").hidden=e; if(e){ $(P+"gebe").checked=false; $(P+"emzirme").checked=false; } }
+
+/* ---------- LITE: ana formdan seçili alanlar kopyalanır, kimlikler L_ önekiyle ---------- */
+const LP="L_", lf=$("lf");
+(function buildLite(){
+  const fs=[...form.children].filter(e=>e.tagName==="FIELDSET");
+  const f1=fs[0].cloneNode(true), f2=fs[1].cloneNode(true), f3=fs[2].cloneNode(true), f5=fs[4].cloneNode(true);
+  ["ad","kilo","baslama"].forEach(id=>{ const e=f1.querySelector("#"+id); if(e) e.closest(".field").remove(); });
+  ["basyas","co"].forEach(id=>{ const e=f2.querySelector("#"+id); if(e) e.closest(".field").remove(); });
+  f2.querySelectorAll(".sub,.checks").forEach(e=>e.remove());
+  const subs=f5.querySelectorAll(".sub"), lastSub=subs[subs.length-1];
+  if(lastSub && /alerji/i.test(lastSub.textContent)){ const nx=lastSub.nextElementSibling; lastSub.remove(); if(nx && nx.classList.contains("checks")) nx.remove(); }
+  const names=["1 · Hasta bilgileri","2 · Sigara kullanımı","3 · Fagerström Nikotin Bağımlılık Testi","4 · Ek hastalıklar"];
+  [f1,f2,f3,f5].forEach((f,i)=>{
+    f.querySelector("legend").textContent=names[i];
+    f.querySelectorAll("[id]").forEach(e=>e.id=LP+e.id);
+    f.querySelectorAll("label[for]").forEach(l=>l.htmlFor=LP+l.htmlFor);
+    lf.appendChild(f);
+  });
+  const h=lf.querySelector("#"+LP+"q6out"); if(h){ const hint=h.parentElement.querySelector(".hint"); if(hint) hint.textContent="(2. bölümdeki sayıdan otomatik)"; }
+})();
+function clearLite(){ lf.querySelectorAll("input,select,textarea").forEach(e=>{ if(e.type==="checkbox") e.checked=false; else if(e.tagName==="SELECT") e.selectedIndex=0; else e.value=""; }); }
+function renderLite(){
+  ACTIVE=[];
+  const s=readState(lf,LP); const ev=evaluate(s);
+  $(LP+"q6out").textContent = s.q6==null? "—" : (s.adet+" adet → "+s.q6+" puan");
+  const fl = s.ftndComplete? ftndLevel(s.ftnd):null;
+  $(LP+"stats").innerHTML = statPY(s)+statFTND(s,fl);
+  const R=buildRx(s,ev,true);
+  $(LP+"rx").innerHTML=R.rx;
+  $(LP+"warn").innerHTML=warnHtml(warnItems(ev,R.chosen),R.chosen);
+}
+lf.addEventListener("input",e=>{ if(e.target.id===LP+"cins") toggleGender(LP); renderLite(); });
+lf.addEventListener("change",e=>{ if(e.target.id===LP+"cins") toggleGender(LP); renderLite(); });
+$(LP+"btnClear").addEventListener("click",()=>{ clearLite(); toggleGender(LP); renderLite(); });
+$(LP+"jumpRes").addEventListener("click",e=>{e.preventDefault(); $(LP+"sonuc").scrollIntoView({behavior:"smooth"});});
 
 $("btnSample").addEventListener("click",()=>{ loadSample(true); window.scrollTo({top:0,behavior:"smooth"}); });
 $("btnClear").addEventListener("click",()=>{clearForm(); toggleGender(); render();});
@@ -1275,6 +1356,7 @@ form.addEventListener("input",e=>{ if(e.target.id==="ilacText"){ clearTimeout(tm
 form.addEventListener("change",e=>{ if(e.target.id==="cins") toggleGender(); render(); });
 
 clearForm(); toggleGender(); render();
+clearLite(); toggleGender(LP); renderLite();
 })();
 </script>
 
