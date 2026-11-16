@@ -87,6 +87,13 @@ button.primary{background:var(--ink);border-color:var(--ink);color:var(--surface
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 @media (max-width:560px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .stats.stats-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.drugpick{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:8px 0 12px}
+.dp{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;padding:12px 14px;border:2px solid var(--line);border-radius:10px;background:#fff;color:var(--fg);cursor:pointer;min-height:86px}
+.dp b{font-family:var(--f-display);font-size:20px;font-weight:700;line-height:1.15;color:var(--ink)}
+.dp small{font-size:12.5px;color:var(--muted);line-height:1.35}
+.dp:hover{border-color:var(--ink)}
+.dp.on{border-color:var(--ink);background:var(--ink-soft);box-shadow:inset 0 0 0 1px var(--ink)}
+.planh{font-size:18px;margin:16px 0 8px;padding-top:12px;border-top:1.5px solid var(--line);display:flex;flex-wrap:wrap;align-items:center;gap:8px}
 .stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:9px 11px;min-width:0}
 .stat .k{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .stat .v{font-family:var(--f-mono);font-size:21px;font-variant-numeric:tabular-nums;line-height:1.2}
@@ -781,7 +788,8 @@ function scanText(P){
   const lines=RECOG_.map(r=>'<li><b>'+esc(r.name)+'</b>'+(r.ing?' → '+esc(r.ing):'')+(r.atc?' <span class="mono">('+esc(r.atc)+')</span>':'')+' · '+(r.groups.length?'<span class="sev warn">'+esc(r.groups.map(g=>GROUPS[g]?GROUPS[g].l:g).join(", "))+'</span>':'bırakma ilaçlarıyla bilinen etkileşim yok')+'</li>');
   $(P+"ilacMatch").innerHTML='<ul class="clean">'+lines.join("")+(unknown.length?'<li><span class="sev bad">Tanınmadı</span>'+esc(unknown.join(", "))+' — yazımı kontrol edin veya ilgili kutuyu elle işaretleyin.</li>':'')+'</ul>';
 }
-let ACTIVE=[]; // değerlendirilen formun tanınan ilaçları (Lite'ta boş)
+let ACTIVE=[]; // değerlendirilen formun tanınan ilaçları
+const PICK={"":null,"L_":null}; // hekimin doz planını görmek için seçtiği ilaç (form başına)
 function namesIn(g){ return ACTIVE.filter(r=>r.groups.includes(g)).map(r=>r.name+(r.ing?" ("+r.ing+")":"")); }
 
 /* ---------- puanlar ---------- */
@@ -1158,7 +1166,8 @@ function buildRx(s,ev,lite){
     rx='<div class="rx-head"><span class="sym">℞</span><h2>Tüm birinci basamak ilaçlar kontrendike</h2><span class="pill p-bad">Uzman</span></div><p>Yoğun davranışsal tedavi. İkinci basamak (nortriptilin, klonidin) için uzman değerlendirmesi; nortriptilin kalp hastasında QT açısından dikkat ister.</p>';
     sumRx="Tüm birinci basamak ilaçlar kontrendike; yoğun davranışsal tedavi, uzmana yönlendirme.";
   } else {
-    chosen=ev.ranked[0];
+    const best=ev.ranked[0], pk=PICK[lite?"L_":""];
+    chosen=(pk && ev.ranked.find(d=>d.key===pk)) || best;
     if(chosen.key==="var") plan=planVar(s,chosen);
     if(chosen.key==="bup") plan=planBup(s,chosen);
     if(chosen.key==="sit") plan=planSit(s);
@@ -1168,7 +1177,13 @@ function buildRx(s,ev,lite){
     if(chosen.key==="var" && s.bobrek==="agir") title+=" (böbrek dozu)";
     if(chosen.key==="bup" && chosen.low && chosen.low.length) title+=" (azaltılmış doz)";
     const ready = ev.notReady ? '<div class="note warn"><b>Hasta henüz hazır değil.</b> Bu plan, hazırlık aşamasına geçtiğinde başlamak içindir. Şimdi 5R ile motivasyonel görüşme yapın.</div>':'';
-    rx='<div class="rx-head"><span class="sym">℞</span><h2>'+esc(title)+'</h2>'+statusPill(chosen.status)+'</div>'+
+    const shortName={var:"Vareniklin",bup:"Bupropion SR",sit:"Sitizin",nrt:"Nikotin replasmanı"};
+    const ciList=ev.all.filter(d=>d.status==="ci");
+    rx='<div class="rx-head"><span class="sym">℞</span><h2>Bu hastada kullanılabilecek ilaçlar</h2></div>'+
+      '<p class="hint">'+(ev.ranked.length>1?'Aşağıdaki ilaçların hepsi bu hasta için uygundur. Doz planını görmek istediğiniz ilaca dokunun.':'Bu hastada uygun tek birinci basamak ilaç budur.')+'</p>'+
+      '<div class="drugpick">'+ev.ranked.map(d=>'<button type="button" class="dp'+(d.key===chosen.key?' on':'')+'" data-pick="'+d.key+'" aria-pressed="'+(d.key===chosen.key)+'"><b>'+esc(shortName[d.key])+'</b><span>'+statusPill(d.status)+'</span>'+(d.plus[0]?'<small>'+esc(d.plus[0])+'</small>':'')+'</button>').join("")+'</div>'+
+      (ciList.length?'<p class="hint">Kontrendike: '+ciList.map(d=>esc(d.name)).join(", ")+' (nedenleri "Tüm seçenekler" kartında).</p>':'')+
+      '<h2 class="planh">Doz planı: '+esc(title)+' '+statusPill(chosen.status)+'</h2>'+
       (ev.needWhy?'<p class="hint">'+esc(ev.needWhy)+'</p>':'')+ready+
       '<p><b>Bırakma günü:</b> <span class="mono">'+fmt(plan.quit)+'</span> · '+esc(plan.quitTxt)+'<br><b>Tedavi bitişi:</b> <span class="mono">'+fmt(plan.end)+'</span></p>'+
       table(plan.rows)+
@@ -1181,10 +1196,6 @@ function buildRx(s,ev,lite){
     if(ev.highDep && chosen.key==="bup" && ev.drugs.nrt.status!=="ci") boost.push("Bupropion + NRT bandı onaylı kombinasyondur; bant bırakma günü başlanır, tansiyon haftalık ölçülür.");
     if(chosen.key==="var" && ev.drugs.bup.status==="ok" && (s.deneme||0)>=2) boost.push("Nüks olasılığı yüksek olgularda vareniklin + bupropion denenebilir.");
     if(boost.length) rx+='<div class="note"><b>Güçlendirme seçeneği:</b> '+boost.map(esc).join(" ")+'</div>';
-    const others=ev.ranked.filter(d=>d.key!==chosen.key);
-    const ciList=ev.all.filter(d=>d.status==="ci");
-    rx+='<h3>Diğer seçenekler</h3>'+(others.length?'<ul class="clean">'+others.map(d=>'<li>'+esc(d.name)+' '+statusPill(d.status)+(d.plus[0]?' <span class="hint">'+esc(d.plus[0])+'</span>':'')+'</li>').join("")+'</ul>':'<p class="hint">Bu hastada başka uygun birinci basamak ilaç yok.</p>')+
-      (ciList.length?'<p class="hint">Kontrendike: '+ciList.map(d=>esc(d.name)).join(", ")+'. Ayrıntılar "Tüm seçenekler" kartında.</p>':'');
     sumRx=title+". Başlama "+fmtS(s.start)+", bırakma günü "+fmtS(plan.quit)+", bitiş "+fmtS(plan.end)+".\n"+plan.rows.map(r=>"  - "+r[0]+" ("+r[1]+"): "+r[2]+" "+r[3]).join("\n");
   }
   return {rx,plan,chosen,sumRx};
@@ -1210,7 +1221,7 @@ function altsHtml(ev,chosen){
   return '<h2>Tüm seçenekler</h2><p class="hint">Kontrendike olmayan her ilaç bu hastada kullanılabilir; sıralama hastanın özelliklerine göre uygunluk sırasıdır.</p><div class="alt">'+order.map(d=>{
     const items=[...d.ci.map(x=>"⛔ "+x),...d.caution.map(x=>"⚠ "+x),...d.plus.map(x=>"✓ "+x),...(d.info||[]).map(x=>"ℹ "+x)];
     const isChosen = chosen && d.key===chosen.key;
-    return '<div class="altrow '+d.status+'"><div class="t"><span>'+esc(d.name)+(isChosen?' · <span class="pill p-info">Önerilen</span>':'')+'</span>'+statusPill(d.status)+'</div>'+(items.length?'<ul>'+items.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul>':'<ul><li>Bu hastada engel saptanmadı.</li></ul>')+'</div>';
+    return '<div class="altrow '+d.status+'"><div class="t"><span>'+esc(d.name)+(isChosen?' · <span class="pill p-info">Doz planı gösterilen</span>':'')+'</span>'+statusPill(d.status)+'</div>'+(items.length?'<ul>'+items.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul>':'<ul><li>Bu hastada engel saptanmadı.</li></ul>')+'</div>';
   }).join("")+'</div>';
 }
 function renderRest(s,ev,R,fl,stageMap){
@@ -1318,7 +1329,7 @@ const SAMPLES=[
 ];
 let sampleIdx=-1;
 try{ const k=parseInt(localStorage.getItem("sbtp_sample")||"0",10); if(k>=0 && k<SAMPLES.length) sampleIdx=k; }catch(e){}
-function clearForm(){ form.querySelectorAll("input,select,textarea").forEach(e=>{ if(e.type==="checkbox") e.checked=false; else if(e.tagName==="SELECT") e.selectedIndex=0; else e.value=""; }); $("baslama").value=today(); $("sampleNote").textContent=""; SCAN[""]={R:[],A:new Set()}; RECOG=SCAN[""].R; AUTO=SCAN[""].A; $("ilacMatch").innerHTML=""; }
+function clearForm(){ form.querySelectorAll("input,select,textarea").forEach(e=>{ if(e.type==="checkbox") e.checked=false; else if(e.tagName==="SELECT") e.selectedIndex=0; else e.value=""; }); $("baslama").value=today(); $("sampleNote").textContent=""; SCAN[""]={R:[],A:new Set()}; RECOG=SCAN[""].R; AUTO=SCAN[""].A; $("ilacMatch").innerHTML=""; PICK[""]=null; }
 function loadSample(advance){
   if(advance){ sampleIdx=(sampleIdx+1)%SAMPLES.length; try{ localStorage.setItem("sbtp_sample",String(sampleIdx)); }catch(e){} }
   const S=SAMPLES[sampleIdx];
@@ -1366,11 +1377,13 @@ function renderLite(){
 let ltmr=null;
 lf.addEventListener("input",e=>{ if(e.target.id===LP+"ilacText"){ clearTimeout(ltmr); ltmr=setTimeout(()=>{scanText(LP);renderLite();},350); return;} if(e.target.id===LP+"cins") toggleGender(LP); renderLite(); });
 lf.addEventListener("change",e=>{ if(e.target.id===LP+"cins") toggleGender(LP); renderLite(); });
-$(LP+"btnClear").addEventListener("click",()=>{ clearLite(); toggleGender(LP); renderLite(); });
+$(LP+"btnClear").addEventListener("click",()=>{ clearLite(); PICK[LP]=null; toggleGender(LP); renderLite(); });
+$(LP+"rx").addEventListener("click",e=>{ const b=e.target.closest("[data-pick]"); if(!b) return; PICK[LP]=b.dataset.pick; renderLite(); });
 $(LP+"jumpRes").addEventListener("click",e=>{e.preventDefault(); $(LP+"sonuc").scrollIntoView({behavior:"smooth"});});
 
 $("btnSample").addEventListener("click",()=>{ loadSample(true); window.scrollTo({top:0,behavior:"smooth"}); });
-$("btnClear").addEventListener("click",()=>{clearForm(); toggleGender(); render();});
+$("btnClear").addEventListener("click",()=>{clearForm(); PICK[""]=null; toggleGender(); render();});
+$("rx").addEventListener("click",e=>{ const b=e.target.closest("[data-pick]"); if(!b) return; PICK[""]=b.dataset.pick; render(); });
 $("btnCopy").addEventListener("click",()=>{
   const done=()=>{const t=$("toast"); t.textContent="Not kopyalandı"; t.hidden=false; setTimeout(()=>t.hidden=true,1800);};
   try{ navigator.clipboard.writeText(lastSummary).then(done).catch(selectSum);}catch(e){selectSum();}
