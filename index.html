@@ -441,6 +441,7 @@ th{color:var(--fg);font-weight:700;border-bottom:2px solid var(--line)}
   <div class="stats stats-2" id="L_stats"></div>
   <div class="card rx-card" id="L_rx"></div>
   <div class="card" id="L_warn"></div>
+  <div class="card" id="L_alts"></div>
 </aside>
 </div>
 </section>
@@ -449,7 +450,7 @@ th{color:var(--fg);font-weight:700;border-bottom:2px solid var(--line)}
 <section class="view" id="v-ilaclar" hidden>
   <div class="kb">
   <div class="col">
-  <div class="drug"><h2>Vareniklin</h2><div class="meta">Dupons (Türkiye'de Şubat 2025'ten beri eczanede) · Champix · parsiyel α4β2 nikotinik agonist / antagonist · Gebelik C</div>
+  <div class="drug"><h2>Vareniklin</h2><div class="meta">Dupons (SBP'lerde ücretsiz; Şubat 2025'ten beri eczanede) · Champix · parsiyel α4β2 nikotinik agonist / antagonist · Gebelik C</div>
     <dl class="dl">
       <dt>Doz</dt><dd>Sigara içerken başlanır. 1–3. gün 0,5 mg sabah · 4–7. gün 0,5 mg 2×1 · 8. günden itibaren 1 mg 2×1. Bırakma günü 8–14. gün arasında (tercihen 8. gün). 12 haftaya tamamlanır; sık nüks edenlerde 24 haftaya uzatılabilir.</dd>
       <dt>Esnek bırakma (Champix KT)</dt><dd>İlk 2 haftada tarih belirleyemeyen hasta, tedavinin ilk 5 haftası içinde kendi bırakma gününü seçebilir. Birden bırakamayan hastada: ilk 12 haftada sigara azaltılır, 12. haftanın sonunda bırakılır, ardından 12 hafta daha 1 mg 2×1 (toplam 24 hafta).</dd>
@@ -462,7 +463,7 @@ th{color:var(--fg);font-weight:700;border-bottom:2px solid var(--line)}
       <dt>Dikkat</dt><dd>Nöbet öyküsünde dikkatli; nöbet olursa kes. Psikiyatrik öyküde yakın izlem (EAGLES: artmış ciddi nöropsikiyatrik risk yok). Baş dönmesi, uyku hali ve geçici bilinç kaybı bildirilmiş (Champix KT): etkisi bilinene kadar araç ve makine kullanılmamalı (ağır vasıta, pilot, hava trafik kontrolörü). Kardiyovasküler hastalıkta yeni/kötüleşen belirtiler bildirilmeli. Laboratuvar izlemi gerekmez. Kesilirken azaltma gerekmez.</dd>
     </dl></div>
 
-  <div class="drug"><h2>Bupropion SR</h2><div class="meta">Zyban, Qsmok (sigara bırakma endikasyonu) · Wellbutrin XL (depresyon) · 150 mg yavaş/uzatılmış salımlı · NDRI · Gebelik C</div>
+  <div class="drug"><h2>Bupropion SR</h2><div class="meta">Qsmok (SBP'lerde ücretsiz), Zyban (sigara bırakma endikasyonu) · Wellbutrin XL (depresyon) · 150 mg yavaş/uzatılmış salımlı · NDRI · Gebelik C</div>
     <dl class="dl">
       <dt>Doz</dt><dd>Sigara içerken başlanır. 1–3. gün 150 mg 1×1 · 4. günden itibaren 150 mg 2×1 (en az 8 saat ara; akşam dozu yatmadan en az 4 saat önce). Bırakma günü 7–14. gün arası. 7–12 hafta, gerekirse 6 aya kadar.</dd>
       <dt>Doz azaltma (150 mg 1×1)</dt><dd>65 yaş üstü, böbrek yetmezliği, hafif–orta siroz, 45 kg altı, yan etkiyi tolere edemeyen.</dd>
@@ -562,7 +563,7 @@ th{color:var(--fg);font-weight:700;border-bottom:2px solid var(--line)}
 <p><b>Nargile daha mı az zararlı?</b> Hayır. Nikotinin yanında karbonmonoksit, ağır metaller ve kömür dumanına maruz kalınır.</p>
 <p><b>Alkol içebilir miyim?</b> Bırakma döneminde alkolden uzak durun; nükse yol açar. Alkol kullanmayanların başarısı ≥ 3 kat yüksektir.</p>
 <p><b>Kaç denemede bırakılır?</b> Ortalama 6–14 deneme bildirilir; uzunlamasına bir çalışmada 1 yıllık başarıdan önce ortalama 30 deneme bulunmuştur. Başarısız deneme irade eksikliği değildir.</p>
-<p><b>Ücretsiz ilaç var mı?</b> Sigara Bırakma Polikliniklerinde Sağlık Bakanlığı'nın gönderdiği ilaçlar (2024'ten beri sitizin) ücretsiz verilebiliyor. Vareniklin, bupropion ve NRT SGK geri ödemesinde değil.</p>
+<p><b>Ücretsiz ilaç var mı?</b> Evet. Sigara Bırakma Polikliniklerinde Sağlık Bakanlığı'nın gönderdiği ilaçlarla tüm etken maddeler ücretsiz verilebiliyor: vareniklin (Champix değil, Dupons), bupropion (Zyban değil, Qsmok), sitizin (Nikitabs) ve nikotin replasmanı. Eczaneden alınırsa SGK geri ödemesi yok.</p>
 <p><b>Danışma hattı:</b> ALO 171 Sigara Bırakma Danışma Hattı.</p>
 </div></details>
 
@@ -839,7 +840,7 @@ function evaluate(s){
   out.notReady = s.asama==="dusunmeme"||s.asama==="dusunme";
   out.quit = s.asama==="surdurme";
 
-  function D(key,name){ return {key,name,ci:[],caution:[],plus:[],score:0}; }
+  function D(key,name){ return {key,name,ci:[],caution:[],plus:[],info:[],score:0}; }
   const V=D("var","Vareniklin"), B=D("bup","Bupropion SR"), S=D("sit","Sitizin"), N=D("nrt","Nikotin replasman tedavisi");
 
   // ---------- VARENİKLİN ----------
@@ -863,8 +864,9 @@ function evaluate(s){
   if(s.p_var){ V.score-=3; V.plus.push("Daha önce kullanmış: tekrar denenebilir, süreyi 24 haftaya uzatmayı veya NRT eklemeyi düşün"); }
   if(c.uyku) V.score-=0.5;
   if(c.sciz||c.bip) V.plus.push("Ciddi psikiyatrik hastalıkta bupropion ve sitizine göre daha uygun");  if(anyPsych && !c.sciz) V.score+=0.5;
-  if(s.tercih==="nrt") V.score-=2;
-  if(s.tercih==="ucretsiz") V.plus.push("Şu an SBP'lerden temin edilemiyor; eczaneden ücretli");
+  if(s.tercih==="nrt") V.score-=3;
+  if(s.tercih==="kisa") V.score-=1.5;
+  if(s.tercih==="ucretsiz") V.info.push("SBP'lerde Dupons olarak ücretsiz verilebiliyor");
 
   // ---------- BUPROPİON ----------
   B.score=6;
@@ -908,8 +910,8 @@ function evaluate(s){
   const bupLow=[]; if(seizMeds.length) bupLow.push("nöbet eşiğini düşüren ilaç"); if(age!=null&&age>=65) bupLow.push("65 yaş üstü"); if(s.bobrek!=="normal") bupLow.push("böbrek yetmezliği"); if(s.karaciger==="hafif") bupLow.push("hafif–orta karaciğer yetmezliği"); if(s.kilo!=null&&s.kilo<45) bupLow.push("45 kg altı");
   B.low=bupLow;
   if(bupLow.length) B.caution.push("Doz 150 mg 1×1 ("+bupLow.join(", ")+")");
-  if(c.dep){ B.score+=2; B.plus.push("Depresyon öyküsünde avantajlı (antidepresan etkili)"); }
-  if(s.kiloKaygi){ B.score+=1.5; B.plus.push("Kilo alımını geciktirir"); }
+  if(c.dep){ B.score+=5; B.plus.push("Depresyon öyküsünde avantajlı (antidepresan etkili)"); }
+  if(s.kiloKaygi){ B.score+=2.5; B.plus.push("Kilo alımını geciktirir"); }
   if(s.p_bup) B.score-=3;
   if(age!=null&&age>=65) B.score-=1;
   if(s.tercih==="nikotinsiz") B.score+=1;
@@ -934,8 +936,8 @@ function evaluate(s){
   if(m.kontrasep) S.caution.push("Hormonal kontraseptif etkinliği bilinmiyor: ek bariyer yöntem kullanılmalı");
   if(s.alkol!=="yok") S.caution.push("Alkol ile depresan etki artar");
   S.caution.push("Sigara 5. günde tamamen bırakılmalı; 5 günden uzun sigarayla birlikte alınırsa nikotin toksisitesi");
-  if(s.tercih==="ucretsiz"){ S.score+=3; S.plus.push("SBP'lerde Sağlık Bakanlığı tarafından ücretsiz veriliyor"); }
-  if(s.tercih==="kisa"){ S.score+=2.5; S.plus.push("Tedavi yalnızca 25 gün"); }
+  if(s.tercih==="ucretsiz") S.info.push("SBP'lerde Nikitabs olarak ücretsiz verilebiliyor");
+  if(s.tercih==="kisa"){ S.score+=6.5; S.plus.push("Tedavi yalnızca 25 gün"); }
   if(s.tercih==="nikotinsiz") S.score+=1;
   if(s.tercih==="nrt") S.score-=2;
   if(s.meslek){ S.score+=1; S.plus.push("Araç ve makine kullanımını etkilemez"); }
@@ -944,6 +946,9 @@ function evaluate(s){
 
   // ---------- NRT ----------
   N.score=7;
+  // düşük–orta bağımlılık: Toraks 2025 tablosunda oral NRT yeterli olabilir
+  const lowDep = s.adet!=null && s.adet<20 && s.ttf!=null && s.ttf<=1 && !(s.ftndComplete && s.ftnd>=6);
+  if(lowDep){ N.score+=4; N.plus.push("Günde 20'den az sigara ve ilk sigara 30 dakikadan sonra: Toraks 2025 tablosuna göre oral NRT yeterli olabilir"); }
   if(s.al_nic) N.ci.push("Nikotin / bant aşırı duyarlılığı");
   if(out.minor) N.ci.push("18 yaş altı: önerilmez");
   if(c.mi6w) N.ci.push("Son 6 hafta içinde MI (bant notunda son 1 ay)");
@@ -959,7 +964,7 @@ function evaluate(s){
   if(c.htu) N.caution.push("Kontrolsüz HT: tansiyonu izle");
   if(c.uyku) N.plus.push("Uykusuzlukta 16 saatlik bant (yatarken çıkarılır)");
   if(highDep){ N.score+=1.5; N.plus.push("Yüksek bağımlılık: bant + kısa etkili form kombinasyonu"); }
-  if(s.tercih==="nrt"){ N.score+=4; }
+  if(s.tercih==="nrt"){ N.score+=6; N.plus.push("Hastanın tercihi"); }
   if(s.tercih==="nikotinsiz") N.score-=4;
   if(s.kiloKaygi) N.score+=0.5;
   if(s.p_nrt){ N.score-=2; N.plus.push("Daha önce NRT başarısız: kombine NRT veya başka ilaç"); }
@@ -1176,6 +1181,10 @@ function buildRx(s,ev,lite){
     if(ev.highDep && chosen.key==="bup" && ev.drugs.nrt.status!=="ci") boost.push("Bupropion + NRT bandı onaylı kombinasyondur; bant bırakma günü başlanır, tansiyon haftalık ölçülür.");
     if(chosen.key==="var" && ev.drugs.bup.status==="ok" && (s.deneme||0)>=2) boost.push("Nüks olasılığı yüksek olgularda vareniklin + bupropion denenebilir.");
     if(boost.length) rx+='<div class="note"><b>Güçlendirme seçeneği:</b> '+boost.map(esc).join(" ")+'</div>';
+    const others=ev.ranked.filter(d=>d.key!==chosen.key);
+    const ciList=ev.all.filter(d=>d.status==="ci");
+    rx+='<h3>Diğer seçenekler</h3>'+(others.length?'<ul class="clean">'+others.map(d=>'<li>'+esc(d.name)+' '+statusPill(d.status)+(d.plus[0]?' <span class="hint">'+esc(d.plus[0])+'</span>':'')+'</li>').join("")+'</ul>':'<p class="hint">Bu hastada başka uygun birinci basamak ilaç yok.</p>')+
+      (ciList.length?'<p class="hint">Kontrendike: '+ciList.map(d=>esc(d.name)).join(", ")+'. Ayrıntılar "Tüm seçenekler" kartında.</p>':'');
     sumRx=title+". Başlama "+fmtS(s.start)+", bırakma günü "+fmtS(plan.quit)+", bitiş "+fmtS(plan.end)+".\n"+plan.rows.map(r=>"  - "+r[0]+" ("+r[1]+"): "+r[2]+" "+r[3]).join("\n");
   }
   return {rx,plan,chosen,sumRx};
@@ -1190,6 +1199,19 @@ function warnHtml(w,chosen){
   return '<h2>Etkileşimler ve uyarılar</h2>'+(w.length?'<ul class="clean warnlist">'+w.map(x=>'<li><span class="sev '+x[0]+'">'+(x[0]==="bad"?"Ciddi":x[0]==="warn"?"Dikkat":"Bilgi")+'</span>'+esc(x[1])+'</li>').join("")+'</ul>':'<p class="hint">Kayıtlı etkileşim yok.</p>')+
     '<div class="ext"><h3>İkinci kontrol</h3><p class="hint">Bırakma ilaçları dışındaki ilaç–ilaç etkileşimleri için hastanın tüm ilaçlarını bir etkileşim denetleyicisine girin'+(ACTIVE.length?': <b>'+esc([...new Set(ACTIVE.map(r=>r.ing||r.name))].join(", "))+'</b>'+(chosen?' + <b>'+esc(chosen.key==="var"?"varenicline":chosen.key==="bup"?"bupropion":chosen.key==="sit"?"cytisine":"nicotine")+'</b>':''):'.')+'</p>'+
     '<div class="extlinks"><a href="https://www.drugs.com/drug_interactions.html" target="_blank" rel="noopener">Drugs.com etkileşim denetleyicisi ↗</a><a href="https://reference.medscape.com/drug-interactionchecker" target="_blank" rel="noopener">Medscape etkileşim denetleyicisi ↗</a></div></div>';
+}
+/* Tüm seçenekler: önerilen en üstte, sonra puan sırasıyla uygun olanlar, en sonda kontrendike olanlar */
+function altsHtml(ev,chosen){
+  const order=ev.all.slice().sort((a,b)=>{
+    if(chosen){ if(a.key===chosen.key) return -1; if(b.key===chosen.key) return 1; }
+    const ca=a.status==="ci"?1:0, cb=b.status==="ci"?1:0;
+    return (ca-cb)||(b.score-a.score);
+  });
+  return '<h2>Tüm seçenekler</h2><p class="hint">Kontrendike olmayan her ilaç bu hastada kullanılabilir; sıralama hastanın özelliklerine göre uygunluk sırasıdır.</p><div class="alt">'+order.map(d=>{
+    const items=[...d.ci.map(x=>"⛔ "+x),...d.caution.map(x=>"⚠ "+x),...d.plus.map(x=>"✓ "+x),...(d.info||[]).map(x=>"ℹ "+x)];
+    const isChosen = chosen && d.key===chosen.key;
+    return '<div class="altrow '+d.status+'"><div class="t"><span>'+esc(d.name)+(isChosen?' · <span class="pill p-info">Önerilen</span>':'')+'</span>'+statusPill(d.status)+'</div>'+(items.length?'<ul>'+items.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul>':'<ul><li>Bu hastada engel saptanmadı.</li></ul>')+'</div>';
+  }).join("")+'</div>';
 }
 function renderRest(s,ev,R,fl,stageMap){
   const plan=R.plan, chosen=R.chosen, sumRx=R.sumRx;
@@ -1206,12 +1228,7 @@ function renderRest(s,ev,R,fl,stageMap){
   $("warn").innerHTML=warnHtml(w,chosen);
 
   // Alternatives
-  const order=ev.all.slice().sort((a,b)=>{const r={ok:0,caution:1,ci:2}; return (r[a.status]-r[b.status])||(b.score-a.score);});
-  $("alts").innerHTML='<h2>Tüm seçenekler</h2><div class="alt">'+order.map(d=>{
-    const items=[...d.ci.map(x=>"⛔ "+x),...d.caution.map(x=>"⚠ "+x),...d.plus.map(x=>"✓ "+x)];
-    const isChosen = chosen && d.key===chosen.key;
-    return '<div class="altrow '+d.status+'"><div class="t"><span>'+esc(d.name)+(isChosen?' · <span class="pill p-info">Önerilen</span>':'')+'</span>'+statusPill(d.status)+'</div>'+(items.length?'<ul>'+items.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul>':'<ul><li>Bu hastada engel saptanmadı.</li></ul>')+'</div>';
-  }).join("")+'</div>';
+  $("alts").innerHTML=altsHtml(ev,chosen);
 
   // Approach by stage
   const ap={
@@ -1343,6 +1360,8 @@ function renderLite(){
   const R=buildRx(s,ev,true);
   $(LP+"rx").innerHTML=R.rx;
   $(LP+"warn").innerHTML=warnHtml(warnItems(ev,R.chosen),R.chosen);
+  $(LP+"alts").innerHTML=(s.adet!=null||s.yas!=null)?altsHtml(ev,R.chosen):'';
+  $(LP+"alts").hidden=!(s.adet!=null||s.yas!=null);
 }
 let ltmr=null;
 lf.addEventListener("input",e=>{ if(e.target.id===LP+"ilacText"){ clearTimeout(ltmr); ltmr=setTimeout(()=>{scanText(LP);renderLite();},350); return;} if(e.target.id===LP+"cins") toggleGender(LP); renderLite(); });
