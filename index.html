@@ -433,7 +433,7 @@ th{color:var(--fg);font-weight:700;border-bottom:2px solid var(--line)}
 <div class="actions">
   <button type="button" id="L_btnClear">Formu temizle</button>
   <a class="jump" href="#L_sonuc" id="L_jumpRes"><button type="button" tabindex="-1">Sonuca git ↓</button></a>
-  <span class="hint">Kısa form: yaş, cinsiyet, sigara öyküsü, Fagerström ve ek hastalıklar. Kullandığı ilaçlar ve motivasyon gibi ayrıntılar için "Hasta değerlendirme" sekmesini kullanın.</span>
+  <span class="hint">Kısa form: yaş, cinsiyet, sigara öyküsü, Fagerström, ek hastalıklar ve kullandığı ilaçlar. Motivasyon, izlem takvimi ve dosya notu için "Hasta değerlendirme" sekmesini kullanın.</span>
 </div>
 <div class="grid">
 <form id="lf" autocomplete="off" onsubmit="return false"></form>
@@ -756,11 +756,17 @@ function lookupItem(raw){
   return null;
 }
 let RECOG=[]; let AUTO=new Set();
-function scanText(){
-  const raw=v("ilacText")||""; RECOG=[];
-  AUTO.forEach(id=>{ const cb=$(id); if(cb) cb.checked=false; }); AUTO=new Set();
+/* her form (ana: "", Lite: "L_") kendi tanınan ilaç listesini tutar */
+const SCAN={"":{R:[],A:new Set()},"L_":{R:[],A:new Set()}};
+function scanText(P){
+  P=P||""; const st=SCAN[P];
+  const raw=v(P+"ilacText")||"";
+  st.A.forEach(id=>{ const cb=$(id); if(cb) cb.checked=false; });
+  st.R=[]; st.A=new Set();
+  if(!P){ RECOG=st.R; AUTO=st.A; }
+  const RECOG_=st.R, AUTO_=st.A;
   const items=raw.split(/[,;\n]+/).map(x=>x.trim()).filter(Boolean);
-  if(!items.length){ $("ilacMatch").innerHTML=""; return; }
+  if(!items.length){ $(P+"ilacMatch").innerHTML=""; return; }
   const unknown=[];
   items.forEach(it=>{
     const hits=lookupItem(it); let ings=[], groups=new Set();
@@ -768,11 +774,11 @@ function scanText(){
     const t=norm(it);
     Object.keys(DICT).forEach(k=>DICT[k].forEach(w=>{ if(t.includes(norm(w))) groups.add(k); }));
     if(!hits && !groups.size){ unknown.push(it); return; }
-    RECOG.push({name:it, ing:[...new Set(ings)].join(" / "), atc:hits?[...new Set(hits.map(h=>h[1]))].join(", "):"", groups:[...groups]});
-    groups.forEach(g=>{ const cb=$("m_"+g); if(cb && !cb.checked){ cb.checked=true; AUTO.add(cb.id); } });
+    RECOG_.push({name:it, ing:[...new Set(ings)].join(" / "), atc:hits?[...new Set(hits.map(h=>h[1]))].join(", "):"", groups:[...groups]});
+    groups.forEach(g=>{ const cb=$(P+"m_"+g); if(cb && !cb.checked){ cb.checked=true; AUTO_.add(cb.id); } });
   });
-  const lines=RECOG.map(r=>'<li><b>'+esc(r.name)+'</b>'+(r.ing?' → '+esc(r.ing):'')+(r.atc?' <span class="mono">('+esc(r.atc)+')</span>':'')+' · '+(r.groups.length?'<span class="sev warn">'+esc(r.groups.map(g=>GROUPS[g]?GROUPS[g].l:g).join(", "))+'</span>':'bırakma ilaçlarıyla bilinen etkileşim yok')+'</li>');
-  $("ilacMatch").innerHTML='<ul class="clean">'+lines.join("")+(unknown.length?'<li><span class="sev bad">Tanınmadı</span>'+esc(unknown.join(", "))+' — yazımı kontrol edin veya ilgili kutuyu elle işaretleyin.</li>':'')+'</ul>';
+  const lines=RECOG_.map(r=>'<li><b>'+esc(r.name)+'</b>'+(r.ing?' → '+esc(r.ing):'')+(r.atc?' <span class="mono">('+esc(r.atc)+')</span>':'')+' · '+(r.groups.length?'<span class="sev warn">'+esc(r.groups.map(g=>GROUPS[g]?GROUPS[g].l:g).join(", "))+'</span>':'bırakma ilaçlarıyla bilinen etkileşim yok')+'</li>');
+  $(P+"ilacMatch").innerHTML='<ul class="clean">'+lines.join("")+(unknown.length?'<li><span class="sev bad">Tanınmadı</span>'+esc(unknown.join(", "))+' — yazımı kontrol edin veya ilgili kutuyu elle işaretleyin.</li>':'')+'</ul>';
 }
 let ACTIVE=[]; // değerlendirilen formun tanınan ilaçları (Lite'ta boş)
 function namesIn(g){ return ACTIVE.filter(r=>r.groups.includes(g)).map(r=>r.name+(r.ing?" ("+r.ing+")":"")); }
@@ -1295,7 +1301,7 @@ const SAMPLES=[
 ];
 let sampleIdx=-1;
 try{ const k=parseInt(localStorage.getItem("sbtp_sample")||"0",10); if(k>=0 && k<SAMPLES.length) sampleIdx=k; }catch(e){}
-function clearForm(){ form.querySelectorAll("input,select,textarea").forEach(e=>{ if(e.type==="checkbox") e.checked=false; else if(e.tagName==="SELECT") e.selectedIndex=0; else e.value=""; }); $("baslama").value=today(); $("sampleNote").textContent=""; RECOG=[]; AUTO=new Set(); $("ilacMatch").innerHTML=""; }
+function clearForm(){ form.querySelectorAll("input,select,textarea").forEach(e=>{ if(e.type==="checkbox") e.checked=false; else if(e.tagName==="SELECT") e.selectedIndex=0; else e.value=""; }); $("baslama").value=today(); $("sampleNote").textContent=""; SCAN[""]={R:[],A:new Set()}; RECOG=SCAN[""].R; AUTO=SCAN[""].A; $("ilacMatch").innerHTML=""; }
 function loadSample(advance){
   if(advance){ sampleIdx=(sampleIdx+1)%SAMPLES.length; try{ localStorage.setItem("sbtp_sample",String(sampleIdx)); }catch(e){} }
   const S=SAMPLES[sampleIdx];
@@ -1312,14 +1318,14 @@ function toggleGender(P){ P=P||""; const e=v(P+"cins")==="E"; $(P+"lb_gebe").hid
 const LP="L_", lf=$("lf");
 (function buildLite(){
   const fs=[...form.children].filter(e=>e.tagName==="FIELDSET");
-  const f1=fs[0].cloneNode(true), f2=fs[1].cloneNode(true), f3=fs[2].cloneNode(true), f5=fs[4].cloneNode(true);
+  const f1=fs[0].cloneNode(true), f2=fs[1].cloneNode(true), f3=fs[2].cloneNode(true), f5=fs[4].cloneNode(true), f6=fs[5].cloneNode(true);
   ["ad","kilo","baslama"].forEach(id=>{ const e=f1.querySelector("#"+id); if(e) e.closest(".field").remove(); });
   ["basyas","co"].forEach(id=>{ const e=f2.querySelector("#"+id); if(e) e.closest(".field").remove(); });
   f2.querySelectorAll(".sub,.checks").forEach(e=>e.remove());
   const subs=f5.querySelectorAll(".sub"), lastSub=subs[subs.length-1];
   if(lastSub && /alerji/i.test(lastSub.textContent)){ const nx=lastSub.nextElementSibling; lastSub.remove(); if(nx && nx.classList.contains("checks")) nx.remove(); }
-  const names=["1 · Hasta bilgileri","2 · Sigara kullanımı","3 · Fagerström Nikotin Bağımlılık Testi","4 · Ek hastalıklar"];
-  [f1,f2,f3,f5].forEach((f,i)=>{
+  const names=["1 · Hasta bilgileri","2 · Sigara kullanımı","3 · Fagerström Nikotin Bağımlılık Testi","4 · Ek hastalıklar","5 · Kullandığı ilaçlar"];
+  [f1,f2,f3,f5,f6].forEach((f,i)=>{
     f.querySelector("legend").textContent=names[i];
     f.querySelectorAll("[id]").forEach(e=>e.id=LP+e.id);
     f.querySelectorAll("label[for]").forEach(l=>l.htmlFor=LP+l.htmlFor);
@@ -1327,9 +1333,9 @@ const LP="L_", lf=$("lf");
   });
   const h=lf.querySelector("#"+LP+"q6out"); if(h){ const hint=h.parentElement.querySelector(".hint"); if(hint) hint.textContent="(2. bölümdeki sayıdan otomatik)"; }
 })();
-function clearLite(){ lf.querySelectorAll("input,select,textarea").forEach(e=>{ if(e.type==="checkbox") e.checked=false; else if(e.tagName==="SELECT") e.selectedIndex=0; else e.value=""; }); }
+function clearLite(){ lf.querySelectorAll("input,select,textarea").forEach(e=>{ if(e.type==="checkbox") e.checked=false; else if(e.tagName==="SELECT") e.selectedIndex=0; else e.value=""; }); SCAN[LP]={R:[],A:new Set()}; $(LP+"ilacMatch").innerHTML=""; }
 function renderLite(){
-  ACTIVE=[];
+  ACTIVE=SCAN[LP].R;
   const s=readState(lf,LP); const ev=evaluate(s);
   $(LP+"q6out").textContent = s.q6==null? "—" : (s.adet+" adet → "+s.q6+" puan");
   const fl = s.ftndComplete? ftndLevel(s.ftnd):null;
@@ -1338,7 +1344,8 @@ function renderLite(){
   $(LP+"rx").innerHTML=R.rx;
   $(LP+"warn").innerHTML=warnHtml(warnItems(ev,R.chosen),R.chosen);
 }
-lf.addEventListener("input",e=>{ if(e.target.id===LP+"cins") toggleGender(LP); renderLite(); });
+let ltmr=null;
+lf.addEventListener("input",e=>{ if(e.target.id===LP+"ilacText"){ clearTimeout(ltmr); ltmr=setTimeout(()=>{scanText(LP);renderLite();},350); return;} if(e.target.id===LP+"cins") toggleGender(LP); renderLite(); });
 lf.addEventListener("change",e=>{ if(e.target.id===LP+"cins") toggleGender(LP); renderLite(); });
 $(LP+"btnClear").addEventListener("click",()=>{ clearLite(); toggleGender(LP); renderLite(); });
 $(LP+"jumpRes").addEventListener("click",e=>{e.preventDefault(); $(LP+"sonuc").scrollIntoView({behavior:"smooth"});});
