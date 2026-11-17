@@ -211,6 +211,18 @@ th{color:var(--fg);font-weight:700;border-bottom:2px solid var(--line)}
   .dp small{font-size:11.5px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .planh{font-size:16px;margin:12px 0 6px;padding-top:10px}
 }
+.site-foot .fb{max-width:820px;margin:14px auto 0;text-align:left;font-size:13.5px}
+.site-foot .fb summary{font-size:14.5px;text-align:center}
+.fb form{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.fb form label{display:flex;flex-direction:column;gap:4px;color:var(--fg);font-size:13.5px}
+.fb form .full{grid-column:1/-1}
+.fb input[type=email]{font:inherit;font-size:14.5px;color:var(--fg);background:#fff;border:1px solid var(--line);border-radius:7px;padding:7px 9px;width:100%;min-height:40px}
+.fb textarea{min-height:110px}
+.fb .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.fb .fb-row{grid-column:1/-1;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.fb .fb-msg{margin:0;font-size:13.5px}
+.fb .fb-msg.ok{color:var(--ok)} .fb .fb-msg.bad{color:var(--bad)}
+@media (max-width:640px){.fb form{grid-template-columns:1fr}.fb input[type=email]{font-size:16px;min-height:44px}.fb .fb-row button{width:100%}}
 </style>
 </head>
 <body>
@@ -641,6 +653,19 @@ th{color:var(--fg);font-weight:700;border-bottom:2px solid var(--line)}
 
 <footer class="site-foot">
   <p class="devs">Geliştiren: <b>Uzm. Dr. Kübra İclal ONAT ÜTÜK</b></p>  <p>Hekimler için klinik karar destek aracıdır; son karar hekimindir. © 2026</p>
+  <details class="fb" id="iletisim"><summary>Geri bildirim ve iletişim</summary><div class="body">
+    <p class="hint">Hata bildirimi, öneri veya sorularınızı yazabilirsiniz. Lütfen hasta bilgisi veya kişisel sağlık bilgisi paylaşmayın. E-posta: <a href="mailto:iletisim@dumansizhava.com">iletisim@dumansizhava.com</a></p>
+    <form id="fbForm" novalidate>
+      <input type="hidden" name="access_key" value="222e22cc-a903-43b5-98c5-562655da3768">
+      <input type="hidden" name="subject" value="Dumansız Hava: yeni geri bildirim">
+      <input type="hidden" name="from_name" value="dumansizhava.com">
+      <div class="hp" aria-hidden="true"><input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off"></div>
+      <label>Ad (isteğe bağlı)<input type="text" name="name" maxlength="100" autocomplete="name"></label>
+      <label>E-posta (yanıt isterseniz)<input type="email" name="email" maxlength="150" autocomplete="email"></label>
+      <label class="full">Mesajınız<textarea name="message" required maxlength="5000"></textarea></label>
+      <div class="fb-row"><button type="submit" class="primary" id="fbBtn">Gönder</button><p class="fb-msg" id="fbMsg" role="status" aria-live="polite"></p></div>
+    </form>
+  </div></details>
   <details class="terms" id="kosullar"><summary>Kullanım koşulları ve sorumluluk reddi</summary><div class="body">
     <p><b>1. Kimler için:</b> Bu araç yalnızca hekimler ve sağlık profesyonelleri için hazırlanmıştır. Hastaların kendi tanı veya tedavilerini belirlemek amacıyla kullanması uygun değildir; hastalar tedavileri için hekimlerine başvurmalıdır.</p>
     <p><b>2. Amaç:</b> Araç bilgilendirme ve klinik karar destek amaçlıdır. Hekimin klinik değerlendirmesinin, hastanın muayenesinin, ilaçların güncel Kısa Ürün Bilgisi (KÜB) ve Kullanma Talimatı (KT) metinlerinin ve ilgili kılavuzların yerine geçmez.</p>
@@ -1420,4 +1445,31 @@ clearLite(); toggleGender(LP); renderLite();
 })();
 </script>
 
+<script>
+(function(){
+  var f=document.getElementById("fbForm"); if(!f) return;
+  var btn=document.getElementById("fbBtn"), msg=document.getElementById("fbMsg");
+  function say(t,c){ msg.textContent=t; msg.className="fb-msg"+(c?" "+c:""); }
+  f.addEventListener("submit",function(e){
+    e.preventDefault();
+    var m=f.message.value.trim();
+    if(m.length<3){ say("Lütfen bir mesaj yazın.","bad"); f.message.focus(); return; }
+    var em=f.email.value.trim();
+    if(em && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){ say("E-posta adresi geçersiz görünüyor.","bad"); f.email.focus(); return; }
+    var data={}; new FormData(f).forEach(function(v,k){ data[k]=v; });
+    if(!em) delete data.email;
+    if(data.botcheck) return;
+    delete data.botcheck;
+    btn.disabled=true; say("Gönderiliyor…");
+    fetch("https://api.web3forms.com/submit",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(data)})
+      .then(function(r){ return r.json().catch(function(){ return {success:false}; }); })
+      .then(function(j){
+        if(j && j.success){ f.reset(); say("Teşekkürler, mesajınız iletildi.","ok"); }
+        else say("Gönderilemedi. Lütfen tekrar deneyin veya iletisim@dumansizhava.com adresine yazın.","bad");
+      })
+      .catch(function(){ say("Bağlantı hatası. Lütfen tekrar deneyin veya iletisim@dumansizhava.com adresine yazın.","bad"); })
+      .then(function(){ btn.disabled=false; });
+  });
+})();
+</script>
 </body></html>
