@@ -228,7 +228,7 @@ th{color:var(--fg);font-weight:700;border-bottom:2px solid var(--line)}
 <body>
 
 <header class="top"><div class="topin">
-  <div class="brand"><a class="rx" href="https://dumansizhava.com/" title="Ana sayfa" aria-label="Ana sayfa">℞</a><div><h1>Sigara Bırakma Tedavi Planlayıcı</h1><small>ICD-10 F17 · Hekim için klinik karar desteği</small></div></div>
+  <div class="brand"><a class="rx" href="https://dumansizhava.com/" title="Ana sayfa" aria-label="Ana sayfa">℞</a><div><h1>Sigara Bırakma Tedavi Planlayıcı</h1><small>Hekim için klinik karar desteği</small></div></div>
   <nav class="tabs" aria-label="Bölümler">
     <a href="#degerlendirme" data-view="degerlendirme">Hasta değerlendirme</a>
     <a href="#lite" data-view="lite">Hızlı değerlendirme (Lite)</a>
@@ -1312,7 +1312,7 @@ function renderRest(s,ev,R,fl,stageMap){
   if(s.bobrek!=="normal") comorb.push("böbrek yetm. ("+s.bobrek+")"); if(s.karaciger!=="normal") comorb.push("karaciğer yetm. ("+s.karaciger+")");
   const meds=[]; form.querySelectorAll('input[id^="m_"]').forEach(e=>{ if(e.checked) meds.push(e.parentElement.textContent.trim().split(" (")[0]); });
   const lines=[
-    "SİGARA BIRAKMA DEĞERLENDİRMESİ (ICD-10 F17) – "+fmtS(new Date()),
+    "SİGARA BIRAKMA DEĞERLENDİRMESİ (ICD-10 F17.2) – "+fmtS(new Date()),
     (s.ad?"Hasta: "+s.ad+" · ":"")+(s.yas!=null?s.yas+" yaş ":"")+(s.cins==="K"?"kadın":s.cins==="E"?"erkek":"")+(s.kilo?" · "+s.kilo+" kg":""),
     "Tütün: "+(s.adet!=null?s.adet+" adet/gün":"?")+(s.yil!=null?" × "+s.yil+" yıl":"")+(s.py!=null?" = "+s.py.toLocaleString("tr-TR")+" paket-yıl":"")+(s.co!=null?" · CO "+s.co+" ppm":""),
     "FNBT: "+(s.ftndComplete?s.ftnd+"/10 ("+fl[0]+")":"tamamlanmadı")+(s.nbi!=null?" · NBİ "+s.nbi+"/6":"")+" · Aşama: "+(stageMap[s.asama]||"-")+(s.deneme?" · Önceki deneme: "+s.deneme:""),
