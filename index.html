@@ -241,6 +241,7 @@ th{color:var(--fg);font-weight:700;border-bottom:2px solid var(--line)}
 .fb .fb-msg{margin:0;font-size:13.5px}
 .fb .fb-msg.ok{color:var(--ok)} .fb .fb-msg.bad{color:var(--bad)}
 @media (max-width:640px){.fb form{grid-template-columns:1fr}.fb input[type=email]{font-size:16px;min-height:44px}.fb .fb-row button{width:100%}}
+.offline{max-width:1320px;margin:14px auto 0;font-size:13px;color:var(--ink);background:var(--warn-bg);border-radius:var(--r);padding:8px 12px}
 </style>
 </head>
 <body>
@@ -254,6 +255,7 @@ th{color:var(--fg);font-weight:700;border-bottom:2px solid var(--line)}
     <a href="#bilgi" data-view="bilgi">Bilgi ve SSS</a>
   </nav>
 </div></header>
+<p class="offline" id="offline" role="status" hidden></p>
 
 <p class="disclaimer">Bu araç Türk Toraks Derneği 2025 Uzlaşı Raporu, SBÜ "Tütün ve Tütün Ürünleri" kitabı ve Türkiye'deki KÜB/KT metinlerine göre öneri üretir. Bırakma ilaçlarının (Dupons, Champix, Zyban, Qsmok, Nikitabs, NRT) KÜB 4.5 etkileşimleri ve sigarayı bırakmanın CYP1A2 etkisi kapsanmıştır; ilaç adları TİTCK ruhsatlı ürünler listesinden (<span class="titck-date">13.11.2026</span>) tanınır. Bunların dışındaki ilaç–ilaç etkileşimleri için ek kaynak kullanın. Yalnızca hekimler içindir; son karar ve sorumluluk hekime aittir. <a href="#kosullar" id="kosulLink">Kullanım koşulları</a></p>
 
@@ -1488,6 +1490,26 @@ clearLite(); toggleGender(LP); renderLite();
       .catch(function(){ say("Bağlantı hatası. Lütfen tekrar deneyin veya iletisim@dumansizhava.com adresine yazın.","bad"); })
       .then(function(){ btn.disabled=false; });
   });
+})();
+</script>
+
+<script>
+(function(){
+  try{
+    var h=location.hostname;
+    if("serviceWorker" in navigator && (h==="dumansizhava.com"||h==="www.dumansizhava.com"||h==="localhost"||h==="127.0.0.1")){
+      window.addEventListener("load",function(){ navigator.serviceWorker.register("/sw.js").catch(function(){}); });
+    }
+  }catch(e){}
+  var bar=document.getElementById("offline"); if(!bar) return;
+  function upd(){
+    if(navigator.onLine===false){
+      var d=document.querySelector(".titck-date");
+      bar.textContent="Çevrimdışı çalışıyorsunuz. Değerlendirme ve doz planları çalışır; ilaç listesi son güncelleme: "+(d?d.textContent:"—")+". Geri bildirim formu internet gerektirir.";
+      bar.hidden=false;
+    } else bar.hidden=true;
+  }
+  window.addEventListener("online",upd); window.addEventListener("offline",upd); upd();
 })();
 </script>
 </body></html>
